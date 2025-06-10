@@ -7,9 +7,10 @@ import ProfileForm from '@/src/components/ProfileForm';
 import ProfilePicture from '@/src/components/ProfilePicture';
 import { ProfileData } from './types';
 import { useTranslation } from 'react-i18next';
-import { useGetUserByIdQuery, useUpdateUserMutation } from '@/src/services/user.service';
+import { useDeleteUserMutation, useGetUserByIdQuery, useUpdateUserMutation } from '@/src/services/user.service';
 import { useParams } from 'next/navigation';
 import { getInitialData } from '@/src/core/utils';
+import { showToast } from '@/src/core/toast';
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -26,6 +27,7 @@ export default function ProfilePage() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [updateUser] = useUpdateUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const [profileData, setProfileData] = useState<ProfileData>(getInitialData(userData));
   const { t } = useTranslation();
 
@@ -35,6 +37,19 @@ export default function ProfilePage() {
     }
     setIsEditing(!isEditing);
   };
+
+  const handleDelete = async () => {
+    const targetUserId = isCurrentUser ? session?.user?.id : userId;
+    if (targetUserId) {
+      try {
+        await deleteUser(targetUserId).unwrap()
+          .then(() => showToast.success(t("profile.deleteRequest.success")))
+          .catch((_error) => showToast.error(t("profile.deleteRequest.error")));
+      } catch (error) {
+        console.error('Error deleting user:', error);
+      }
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,7 +64,9 @@ export default function ProfilePage() {
       if (profileData.profilePictureFile) {
         formData.append('profilePicture', profileData.profilePictureFile);
       }
-      await updateUser({ userId: targetUserId, formData });
+      await updateUser({ userId: targetUserId, formData }).unwrap()
+        .then(() => showToast.success('profile.updateRequest.success'))
+        .catch((error) => showToast.error('profile.updateRequest.error'));
     }
     setIsEditing(false);
   };
@@ -89,6 +106,13 @@ export default function ProfilePage() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
                 {t('profile.save')}
+              </button>
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                {t('profile.delete')}
               </button>
             </div>
           )}

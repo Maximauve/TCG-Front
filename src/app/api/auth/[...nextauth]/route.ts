@@ -3,9 +3,17 @@ import GoogleProvider from "next-auth/providers/google"
 import DiscordProvider from "next-auth/providers/discord"
 import TwitchProvider from "next-auth/providers/twitch"
 import CredentialsProvider from "next-auth/providers/credentials"
+
 declare module "next-auth" {
   interface Session {
     accessToken?: string
+  }
+  interface User {
+    accessToken?: string
+  }
+  interface Profile {
+    sub?: string
+    id?: string
   }
 }
 
@@ -41,7 +49,7 @@ const handler = NextAuth({
             throw new Error('Email and password are required');
           }
 
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -77,17 +85,55 @@ const handler = NextAuth({
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, account }) {
+    async signIn({ user, account, profile }) {
+      console.log("ACCOUNT + ", account);
+      console.log("USER + ", user);
+      console.log("PROFILE + ", profile);
+      if (account?.provider !== 'credentials') {
+        try {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/oauth`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              provider: account?.provider,
+              providerId: profile?.sub || profile?.id,
+              email: user.email,
+              name: user.name,
+              accessToken: account?.access_token,
+              refreshToken: account?.refresh_token,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            throw new Error(data.message || 'OAuth registration failed');
+          }
+
+          if (data.accessToken) {
+            user.accessToken = data.accessToken;
+            return true;
+          }
+        } catch (error) {
+          console.error('OAuth error:', error);
+          return false;
+        }
+      }
+      return true;
+    },
+    async jwt({ token, account, user }) {
       if (account) {
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
         token.idToken = account.id_token;
       }
+      if (user) {
+        token.accessToken = user.accessToken;
+      }
       return token;
     },
     async session({ session, token }) {
       session.accessToken = token.accessToken;
-
       return session;
     },
     async redirect({ url, baseUrl }) {

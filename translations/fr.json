@@ -5,6 +5,7 @@
     "edit": "Modifier le profil",
     "cancel": "Annuler",
     "save": "Enregistrer les modifications",
+    "delete": "Supprimer",
     "fields": {
       "firstName": "Prénom",
       "lastName": "Nom",
@@ -12,6 +13,14 @@
       "email": "Email",
       "password": "Nouveau mot de passe",
       "description": "Description"
+    },
+    "deleteRequest": {
+      "error": "Une erreur est survenue lors de la suppresion du compte",
+      "success": "Le compte a bien été supprimé"
+    },
+    "updateRequest": {
+      "error": "Une erreur est survenue lors de la mise à jour du compte",
+      "success": "Le compte a bien été mis à jour"
     }
   }
 }

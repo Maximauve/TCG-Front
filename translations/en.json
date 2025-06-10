@@ -4,6 +4,7 @@
     "title": "Profile",
     "edit": "Edit Profile",
     "cancel": "Cancel",
+    "delete": "Supprimer",
     "save": "Save Changes",
     "fields": {
       "firstName": "First Name",
@@ -12,6 +13,14 @@
       "email": "Email",
       "password": "New Password",
       "description": "Description"
+    },
+    "deleteRequest": {
+      "error": "An error occurred while deleting the account",
+      "success": "Account successfully deleted"
+    },
+    "updateRequest": {
+      "error": "An error occurred while updating the account",
+      "success": "Account successfully updated"
     }
   }
 }
