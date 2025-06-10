@@ -8,11 +8,13 @@ export interface ProfileData {
   email: string;
   password: string;
   profilePicture: string;
+  profilePictureFile?: File;
 }
 
 declare module "next-auth" {
   interface Session {
     user: {
+      id?: string;
       firstName?: string;
       lastName?: string;
       username?: string;
@@ -27,6 +29,7 @@ declare module "next-auth" {
 export interface ProfileHeaderProps {
   isEditing: boolean;
   onEditToggle: () => void;
+  canEdit: boolean;
 }
 
 export interface ProfilePictureProps {

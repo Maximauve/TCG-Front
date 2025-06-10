@@ -3,7 +3,7 @@ import { getSession } from 'next-auth/react';
 
 export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_URL,
+    baseUrl: `${process.env.NEXT_PUBLIC_API_URL}/api`,
     prepareHeaders: async headers => {
       const session = await getSession();
       if (session?.accessToken) {
@@ -13,5 +13,6 @@ export const baseApi = createApi({
     },
     credentials: 'include',
   }),
+  tagTypes: ["USER"],
   endpoints: () => ({}),
 });

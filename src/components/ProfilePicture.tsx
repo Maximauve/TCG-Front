@@ -3,14 +3,26 @@
 import Image from 'next/image';
 import { ProfilePictureProps } from '@/src/app/profile/types';
 import { useTranslation } from 'react-i18next';
+import { useState } from 'react';
 
 export default function ProfilePicture({ profilePicture, isEditing, onPictureChange }: ProfilePictureProps) {
   const { t } = useTranslation();
+  const [previewUrl, setPreviewUrl] = useState<string>(profilePicture);
+
+  const handleFileChange = (file: File) => {
+    onPictureChange(file);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setPreviewUrl(reader.result as string);
+    };
+    reader.readAsDataURL(file);
+  };
+
   return (
     <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-8">
       <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
         <img
-          src={profilePicture || 'https://api.dicebear.com/7.x/avataaars/svg?seed=John'}
+          src={previewUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=John'}
           alt={t('profile.fields.profilePicture')}
           className="rounded-full object-cover w-full h-full"
         />
@@ -23,7 +35,7 @@ export default function ProfilePicture({ profilePicture, isEditing, onPictureCha
             onChange={(e) => {
               const file = e.target.files?.[0];
               if (file) {
-                onPictureChange(file);
+                handleFileChange(file);
               }
             }}
             className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
