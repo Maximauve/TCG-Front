@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useRegisterMutation } from "../../services/auth.service";
 
 export default function Register() {
   const router = useRouter();
@@ -13,6 +14,8 @@ export default function Register() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
+  const [register] = useRegisterMutation();
+
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -23,28 +26,21 @@ export default function Register() {
     }
 
     try {
-      const response = await fetch(`${process.env.API_URL}/api/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname,
-          lastname,
-          username,
-          email,
-          password,
-        }),
-      });
+      const response = await register({
+        firstname,
+        lastname,
+        username,
+        email,
+        password,
+      }).unwrap();
 
-      if (response.ok) {
+      if (response.success) {
         router.push("/login");
       } else {
-        const data = await response.json();
-        setError(data.message || "Une erreur est survenue lors de l'inscription");
+        setError(response.message || "Une erreur est survenue lors de l'inscription");
       }
     } catch (err) {
-      setError("Une erreur est survenue lors de l'inscription");
+      setError(err instanceof Error ? err.message : "Une erreur est survenue lors de l'inscription");
     }
   };
 
