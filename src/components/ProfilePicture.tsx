@@ -1,13 +1,17 @@
+'use client';
+
 import Image from 'next/image';
 import { ProfilePictureProps } from '@/src/app/profile/types';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfilePicture({ profilePicture, isEditing, onPictureChange }: ProfilePictureProps) {
+  const { t } = useTranslation();
   return (
     <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-8">
       <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
         <img
           src={profilePicture || 'https://api.dicebear.com/7.x/avataaars/svg?seed=John'}
-          alt="Profile"
+          alt={t('profile.fields.profilePicture')}
           className="rounded-full object-cover w-full h-full"
         />
       </div>

@@ -1,6 +1,10 @@
+'use client';
+
 import { ProfileFormProps } from '@/src/app/profile/types';
+import { useTranslation } from 'react-i18next';
 
 export default function ProfileForm({ profileData, setProfileData, isEditing }: ProfileFormProps) {
+  const { t } = useTranslation();
   const inputClasses = "mt-1 block w-full px-4 py-2 rounded-lg border-2 focus:outline-none focus:ring-2 transition-all duration-200";
   const enabledInputClasses = `${inputClasses} border-gray-300 focus:border-blue-500 focus:ring-blue-200 bg-white text-gray-900`;
   const disabledInputClasses = `${inputClasses} border-gray-200 bg-gray-50 text-gray-600`;
@@ -9,7 +13,7 @@ export default function ProfileForm({ profileData, setProfileData, isEditing }: 
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-1">First Name</label>
+          <label htmlFor="firstName" className="block text-sm font-semibold text-gray-700 mb-1">{t('profile.fields.firstName')}</label>
           <input
             id="firstName"
             type="text"
@@ -22,7 +26,7 @@ export default function ProfileForm({ profileData, setProfileData, isEditing }: 
         </div>
 
         <div>
-          <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-1">Last Name</label>
+          <label htmlFor="lastName" className="block text-sm font-semibold text-gray-700 mb-1">{t('profile.fields.lastName')}</label>
           <input
             id="lastName"
             type="text"
@@ -35,7 +39,7 @@ export default function ProfileForm({ profileData, setProfileData, isEditing }: 
         </div>
 
         <div>
-          <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+          <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-1">{t('profile.fields.username')}</label>
           <input
             id="username"
             type="text"
@@ -48,7 +52,7 @@ export default function ProfileForm({ profileData, setProfileData, isEditing }: 
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+          <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-1">{t('profile.fields.email')}</label>
           <input
             id="email"
             type="email"
@@ -62,7 +66,7 @@ export default function ProfileForm({ profileData, setProfileData, isEditing }: 
 
         {isEditing && (
           <div>
-            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">New Password</label>
+            <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-1">{t('profile.fields.password')}</label>
             <input
               id="password"
               type="password"
@@ -76,7 +80,7 @@ export default function ProfileForm({ profileData, setProfileData, isEditing }: 
       </div>
 
       <div className="mt-6">
-        <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">Description</label>
+        <label htmlFor="description" className="block text-sm font-semibold text-gray-700 mb-1">{t('profile.fields.description')}</label>
         <textarea
           id="description"
           value={profileData.description}

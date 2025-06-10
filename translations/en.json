@@ -1,0 +1,17 @@
+{
+  "hello": "Hello world",
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit Profile",
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "fields": {
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "username": "Username",
+      "email": "Email",
+      "password": "New Password",
+      "description": "Description"
+    }
+  }
+}

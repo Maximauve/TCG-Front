@@ -6,6 +6,7 @@ import ProfileHeader from '@/src/components/ProfileHeader';
 import ProfileForm from '@/src/components/ProfileForm';
 import ProfilePicture from '@/src/components/ProfilePicture';
 import { ProfileData } from './types';
+import { useTranslation } from 'react-i18next';
 
 // Mock user data
 const mockUser = {
@@ -29,6 +30,7 @@ export default function ProfilePage() {
     password: '',
     profilePicture: mockUser.image,
   });
+  const { t } = useTranslation();
 
   // if (!session) {
   //   return null;
@@ -69,7 +71,7 @@ export default function ProfilePage() {
                 type="submit"
                 className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
               >
-                Save Changes
+                {t('profile.save')}
               </button>
             </div>
           )}
