@@ -21,7 +21,6 @@ export default function ThirdPartyConnections() {
   };
 
   const handleDisconnect = async (provider: string) => {
-    // TODO: Implement disconnect logic with backend
     console.log(`Disconnecting from ${provider}`);
   };
 

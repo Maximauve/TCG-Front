@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useRegisterMutation } from "../../services/auth.service";
+import { signIn } from "next-auth/react";
+import { showToast } from "@/src/core/toast";
 
 export default function Register() {
   const router = useRouter();
@@ -34,13 +36,24 @@ export default function Register() {
         password,
       }).unwrap();
 
-      if (response.success) {
-        router.push("/login");
+      if (response) {
+        const result = await signIn("Credentials", {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (result?.error) {
+          setError("Erreur lors de la connexion automatique");
+          return;
+        }
+
+        router.push("/");
       } else {
-        setError(response.message || "Une erreur est survenue lors de l'inscription");
+        setError("Une erreur est survenue lors de l'inscription");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Une erreur est survenue lors de l'inscription");
+      showToast.error(err instanceof Error ? err.message : "Une erreur est survenue lors de l'inscription");
     }
   };
 
