@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { useState } from 'react';
 
 interface ConnectionStatus {
   provider: string;
@@ -8,7 +9,8 @@ interface ConnectionStatus {
 
 export default function ThirdPartyConnections() {
   const { t } = useTranslation();
-  const { data: session } = useSession();
+  const { data: session, update } = useSession();
+  const [isDisconnecting, setIsDisconnecting] = useState<string | null>(null);
 
   const connections: ConnectionStatus[] = [
     { provider: 'google', connected: !!session?.user?.googleId },
@@ -21,7 +23,33 @@ export default function ThirdPartyConnections() {
   };
 
   const handleDisconnect = async (provider: string) => {
-    console.log(`Disconnecting from ${provider}`);
+    try {
+      setIsDisconnecting(provider);
+      
+      const res = await fetch('/api/auth/disconnect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ provider }),
+      });
+
+      if (!res.ok) {
+        throw new Error('Erreur lors de la déconnexion');
+      }
+
+      await update({
+        ...session,
+        user: {
+          ...session?.user,
+          [`${provider}Id`]: undefined,
+        },
+      });
+    } catch (error) {
+      console.error(`Erreur lors de la déconnexion de ${provider}:`, error);
+    } finally {
+      setIsDisconnecting(null);
+    }
   };
 
   return (
@@ -61,9 +89,14 @@ export default function ThirdPartyConnections() {
             {connection.connected ? (
               <button
                 onClick={() => handleDisconnect(connection.provider)}
-                className="px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors"
+                disabled={isDisconnecting === connection.provider}
+                className={`px-4 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors ${
+                  isDisconnecting === connection.provider ? 'opacity-50 cursor-not-allowed' : ''
+                }`}
               >
-                {t('profile.connections.disconnect')}
+                {isDisconnecting === connection.provider 
+                  ? t('profile.connections.disconnecting') 
+                  : t('profile.connections.disconnect')}
               </button>
             ) : (
               <button
