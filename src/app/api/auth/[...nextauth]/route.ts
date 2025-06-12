@@ -51,7 +51,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    token?: string;
+    accessToken?: string;
     roles: string[];
     user?: {
       id: string;
@@ -92,7 +92,10 @@ const handler = NextAuth({
             throw new Error('Email et mot de passe requis');
           }
 
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login_check`, {
+          const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/login_check`;
+          console.log('🔍 API URL:', apiUrl);
+
+          const res = await fetch(apiUrl, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -101,7 +104,9 @@ const handler = NextAuth({
             }),
           });
 
+          console.log('📡 API Response status:', res.status);
           const data = await res.json();
+          console.log('📦 API Response data:', data);
 
           if (!res.ok) {
             throw new Error(data.message || 'Erreur d\'authentification');
@@ -197,7 +202,7 @@ const handler = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      session.token = token.token;
+      session.token = token.accessToken;
       if (token.user) {
         session.user = token.user;
       }
@@ -208,7 +213,7 @@ const handler = NextAuth({
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: false,
+  debug: true,
 })
 
 export { handler as GET, handler as POST }

@@ -6,6 +6,7 @@
     "cancel": "Cancel",
     "delete": "Supprimer",
     "save": "Save Changes",
+    "generateAvatar": "Générate random picture",
     "fields": {
       "firstName": "First Name",
       "lastName": "Last Name",
