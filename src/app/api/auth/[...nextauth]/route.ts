@@ -14,8 +14,20 @@ interface DecodedToken {
     lastName: string;
     profilePicture: string;
     description: string;
+    googleId?: string;
+    twitchId?: string;
+    discordId?: string
   };
   roles: string[];
+}
+
+interface OAuthPayload {
+  provider: string;
+  providerId: string;
+  email: string;
+  name: string;
+  given_name?: string;
+  family_name?: string;
 }
 
 declare module "next-auth" {
@@ -30,6 +42,9 @@ declare module "next-auth" {
       profilePicture: string;
       description: string;
       roles: string[];
+      googleId?: string;
+      twitchId?: string;
+      discordId?: string;
     }
   }
   interface User {
@@ -42,10 +57,15 @@ declare module "next-auth" {
     description: string;
     roles: string[];
     token?: string;
+    googleId?: string;
+    twitchId?: string;
+    discordId?: string;
   }
   interface Profile {
-    sub?: string
-    id?: string
+    sub?: string;
+    id?: string;
+    given_name?: string;
+    family_name?: string;
   }
 }
 
@@ -62,6 +82,9 @@ declare module "next-auth/jwt" {
       profilePicture: string;
       description: string;
       roles: string[];
+      googleId?: string;
+      twitchId?: string;
+      discordId?: string;
     }
   }
 }
@@ -128,6 +151,9 @@ const handler = NextAuth({
                 lastName: decodedToken.user.lastName,
                 profilePicture: decodedToken.user.profilePicture,
                 description: decodedToken.user.description,
+                googleId: decodedToken.user.googleId,
+                discordId: decodedToken.user.discordId,
+                twitchId: decodedToken.user.twitchId,
                 roles: decodedToken.roles,
                 token: data.token,
               };
@@ -150,17 +176,22 @@ const handler = NextAuth({
     async signIn({ user, account, profile }) {
       if (account?.provider !== 'credentials') {
         try {
+          const payload: OAuthPayload = {
+            provider: account?.provider || '',
+            providerId: user.id || '',
+            email: user.email || '',
+            name: user.name || '',
+          };
+
+          if (account?.provider === 'google' && profile) {
+            payload.given_name = profile.given_name;
+            payload.family_name = profile.family_name;
+          }
+
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/oauth`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              provider: account?.provider,
-              providerId: profile?.sub || profile?.id,
-              email: user.email,
-              name: user.name,
-              accessToken: account?.access_token,
-              refreshToken: account?.refresh_token,
-            }),
+            body: JSON.stringify(payload),
           });
 
           const data = await res.json();
@@ -169,8 +200,15 @@ const handler = NextAuth({
             throw new Error(data.message || 'OAuth registration failed');
           }
 
-          if (data.accessToken) {
+          if (data.token) {
             user.token = data.token;
+            if (account && account.provider === 'google') {
+              user.googleId = profile?.sub;
+            } else if (account && account.provider === 'twitch') {
+              user.twitchId = profile?.sub;
+            } else if (account && account.provider === 'discord') {
+              user.discordId = profile?.id;
+            }
             return true;
           }
         } catch (error) {
@@ -195,6 +233,9 @@ const handler = NextAuth({
           profilePicture: user.profilePicture,
           description: user.description,
           roles: user.roles,
+          googleId: user.googleId,
+          twitchId: user.twitchId,
+          discordId: user.discordId,
         };
         token.roles = user.roles;
         token.accessToken = user.token;
