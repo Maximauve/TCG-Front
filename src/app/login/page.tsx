@@ -11,8 +11,9 @@ export default function Login() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await signIn("credentials", {
-      redirect: false,
+    await signIn("Credentials", {
+      redirect: true,
+      callbackUrl: "/",
       email,
       password,
     });

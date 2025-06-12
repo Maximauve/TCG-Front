@@ -28,7 +28,6 @@ export const authApi = baseApi.injectEndpoints({
         url: '/register',
         method: 'POST',
         body: data,
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',
@@ -39,7 +38,6 @@ export const authApi = baseApi.injectEndpoints({
       query: () => ({
         url: '/logout',
         method: 'POST',
-        credentials: 'include',
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json',

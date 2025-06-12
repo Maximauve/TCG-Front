@@ -6,10 +6,10 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 declare module "next-auth" {
   interface Session {
-    accessToken?: string;
+    token?: string;
   }
   interface User {
-    accessToken?: string
+    token?: string
   }
   interface Profile {
     sub?: string
@@ -19,7 +19,7 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    accessToken?: string
+    token?: string
   }
 }
 
@@ -64,11 +64,11 @@ const handler = NextAuth({
             throw new Error(data.message || 'Authentication failed');
           }
 
-          if (data.accessToken) {
+          if (data.token) {
             return {
               id: data.id || 'unknown',
               email: credentials.email,
-              accessToken: data.accessToken,
+              token: data.token,
               name: data.username || credentials.email,
             };
           }
@@ -111,7 +111,7 @@ const handler = NextAuth({
           }
 
           if (data.accessToken) {
-            user.accessToken = data.accessToken;
+            user.token = data.token;
             return true;
           }
         } catch (error) {
@@ -123,17 +123,18 @@ const handler = NextAuth({
     },
     async jwt({ token, account, user }) {
       if (account) {
-        token.accessToken = account.access_token;
+        token.token = account.access_token;
         token.refreshToken = account.refresh_token;
         token.idToken = account.id_token;
       }
       if (user) {
-        token.accessToken = user.accessToken;
+        token.accessToken = user.token;
       }
       return token;
     },
     async session({ session, token }) {
-      session.accessToken = token.accessToken;
+      session.token = token.token;
+
       return session;
     },
     async redirect({ url, baseUrl }) {
