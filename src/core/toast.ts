@@ -11,11 +11,9 @@ export const defaultOptions: ToastOptions = {
 
 export const showToast = {
   success: (message: string, options?: ToastOptions) => {
-    console.log("OUI OUI")
     toast.success(message, { ...defaultOptions, ...options });
   },
   error: (message: string, options?: ToastOptions) => {
-    console.log("OUI OUI")
     toast.error(message, { ...defaultOptions, ...options });
   },
   info: (message: string, options?: ToastOptions) => {

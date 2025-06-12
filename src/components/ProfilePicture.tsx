@@ -7,39 +7,31 @@ import { useState } from 'react';
 
 export default function ProfilePicture({ profilePicture, isEditing, onPictureChange }: ProfilePictureProps) {
   const { t } = useTranslation();
-  const [previewUrl, setPreviewUrl] = useState<string>(profilePicture);
 
-  const handleFileChange = (file: File) => {
-    onPictureChange(file);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setPreviewUrl(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+  const generateRandomAvatar = () => {
+    const randomCode = Math.floor(100000 + Math.random() * 900000);
+    const newAvatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${randomCode}`;
+    onPictureChange(newAvatarUrl);
   };
 
   return (
-    <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 mb-8">
+    <div className="flex flex-col items-center gap-4 sm:flex-row sm:gap-6 mb-8">
       <div className="relative w-24 h-24 sm:w-32 sm:h-32 flex-shrink-0">
         <img
-          src={previewUrl || 'https://api.dicebear.com/7.x/avataaars/svg?seed=John'}
+          src={profilePicture || 'https://api.dicebear.com/7.x/avataaars/svg?seed=John'}
           alt={t('profile.fields.profilePicture')}
           className="rounded-full object-cover w-full h-full"
         />
       </div>
       {isEditing && (
-        <div className="w-full sm:flex-grow">
-          <input
-            type="file"
-            accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                handleFileChange(file);
-              }
-            }}
-            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-          />
+        <div className="w-full sm:flex-grow flex justify-center sm:justify-start">
+          <button
+            type="button"
+            onClick={generateRandomAvatar}
+            className="px-4 py-2 bg-blue-50 text-blue-600 border border-blue-200 rounded-md hover:bg-blue-100 transition-colors flex items-center justify-center gap-2"
+          >
+            {t('profile.generateAvatar')}
+          </button>
         </div>
       )}
     </div>

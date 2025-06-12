@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import ProfileHeader from '@/src/components/ProfileHeader';
 import ProfileForm from '@/src/components/ProfileForm';
@@ -12,9 +12,11 @@ import { useDeleteUserMutation, useGetUserByIdQuery, useUpdateUserMutation } fro
 import { useParams } from 'next/navigation';
 import { getInitialData } from '@/src/core/utils';
 import { showToast } from '@/src/core/toast';
+import Loader from '@/src/components/Loader';
+import { User } from '@/src/types/model/User';
 
 export default function ProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const params = useParams();
   const userId = params?.id as string | undefined;
   const isCurrentUser = !userId;
@@ -24,17 +26,23 @@ export default function ProfilePage() {
   });
 
   const userData = isCurrentUser ? session?.user : otherUserData;
-  const canEdit = isCurrentUser || session?.user?.role === 'ADMIN';
+  const canEdit = (isCurrentUser || session?.user?.roles?.includes('ADMIN')) ?? false;
 
   const [isEditing, setIsEditing] = useState(false);
   const [updateUser] = useUpdateUserMutation();
   const [deleteUser] = useDeleteUserMutation();
-  const [profileData, setProfileData] = useState<ProfileData>(getInitialData(userData));
+  const [profileData, setProfileData] = useState<ProfileData>(getInitialData(userData as User));
   const { t } = useTranslation();
+
+  useEffect(() => {
+    if (userData) {
+      setProfileData(getInitialData(userData as User));
+    }
+  }, [userData]);
 
   const handleEditToggle = () => {
     if (isEditing) {
-      setProfileData(getInitialData(userData));
+      setProfileData(getInitialData(userData as User));
     }
     setIsEditing(!isEditing);
   };
@@ -45,7 +53,7 @@ export default function ProfilePage() {
       try {
         await deleteUser(targetUserId).unwrap()
           .then(() => showToast.success(t("profile.deleteRequest.success")))
-          .catch((_error) => showToast.error(t("profile.deleteRequest.error")));
+          .catch((error) => showToast.error(error.message || t("profile.deleteRequest.error")));
       } catch (error) {
         console.error('Error deleting user:', error);
       }
@@ -58,22 +66,24 @@ export default function ProfilePage() {
     if (targetUserId) {
       const formData = new FormData();
       Object.entries(profileData).forEach(([key, value]) => {
-        if (value && key !== 'profilePictureFile') {
+        if (value) {
           formData.append(key, value);
         }
       });
-      if (profileData.profilePictureFile) {
-        formData.append('profilePicture', profileData.profilePictureFile);
-      }
       await updateUser({ userId: targetUserId, formData }).unwrap()
-        .then(() => showToast.success('profile.updateRequest.success'))
-        .catch((error) => showToast.error('profile.updateRequest.error'));
+        .then(() => {
+          showToast.success('profile.updateRequest.success');
+          setIsEditing(false);
+        })
+        .catch((error) => {
+          showToast.error(error.message || 'profile.updateRequest.error');
+          setProfileData(getInitialData(userData as User));
+        });
     }
-    setIsEditing(false);
   };
 
-  if (!userData && !isCurrentUser) {
-    return <div>Loading...</div>;
+  if (status === "loading" || (!userData && !isCurrentUser)) {
+    return <Loader />;
   }
 
   return (
@@ -85,12 +95,12 @@ export default function ProfilePage() {
           canEdit={canEdit}
         />
         
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6" role="form">
           <ProfilePicture 
             profilePicture={profileData.profilePicture}
             isEditing={isEditing}
-            onPictureChange={(file) => {
-              setProfileData({ ...profileData, profilePictureFile: file });
+            onPictureChange={(newAvatarUrl: string) => {
+              setProfileData({ ...profileData, profilePicture: newAvatarUrl });
             }}
           />
 

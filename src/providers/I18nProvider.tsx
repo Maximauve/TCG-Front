@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import i18n from '@/src/i18n';
+import Loader from '../components/Loader';
 
 interface I18nProviderProps {
   children: React.ReactNode;
@@ -22,7 +23,7 @@ export const I18nProvider: React.FC<I18nProviderProps> = ({ children }) => {
   }, []);
 
   if (!isInitialized) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return <>{children}</>;

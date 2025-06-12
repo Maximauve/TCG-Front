@@ -4,6 +4,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import { showToast } from "@/src/core/toast";
 import { useRouter } from "next/navigation";
+import Loader from "@/src/components/Loader";
 
 export default function Login() {
   const { data: session, status } = useSession();
@@ -34,10 +35,7 @@ export default function Login() {
         <h1 className="text-2xl font-bold text-center mb-6">Connexion</h1>
 
         {status === "loading" ? (
-          <div className="flex justify-center my-8">
-            <div className="w-8 h-8 border-4 border-t-blue-500 rounded-full animate-spin"></div>
-            <span className="ml-2">Chargement...</span>
-          </div>
+          <Loader />
         ) : session ? (
           <div className="space-y-6">
             <div className="flex items-center justify-center">
@@ -67,6 +65,7 @@ export default function Login() {
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                 <input
+                  id="email"
                   type="email"
                   className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
                   value={email}
@@ -78,6 +77,7 @@ export default function Login() {
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mot de passe</label>
                 <input
+                  id="password"
                   type="password"
                   className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-blue-500"
                   value={password}

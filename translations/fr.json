@@ -6,6 +6,7 @@
     "cancel": "Annuler",
     "save": "Enregistrer les modifications",
     "delete": "Supprimer",
+    "generateAvatar": "Générer une photo de profil aléatoire",
     "fields": {
       "firstName": "Prénom",
       "lastName": "Nom",
