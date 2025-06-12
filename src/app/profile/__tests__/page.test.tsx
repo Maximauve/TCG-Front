@@ -1,6 +1,28 @@
 import { render, screen, fireEvent } from '@testing-library/react'
+import '@testing-library/jest-dom'
 import ProfilePage from '../page'
 import { useTranslation } from 'react-i18next'
+import { SessionProvider } from 'next-auth/react'
+
+// Mock next-auth
+jest.mock('next-auth/react', () => ({
+  useSession: () => ({
+    data: {
+      user: {
+        id: '1',
+        username: 'testuser',
+        email: 'test@example.com',
+        firstName: 'John',
+        lastName: 'Doe',
+        role: 'USER',
+        profilePicture: 'https://example.com/avatar.jpg',
+      },
+      expires: '1',
+    },
+    status: 'authenticated',
+  }),
+  SessionProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+}))
 
 // Mock i18next
 jest.mock('react-i18next', () => ({
@@ -8,10 +30,20 @@ jest.mock('react-i18next', () => ({
     t: (key: string) => {
       const translations: { [key: string]: string } = {
         'profile.title': 'Profile',
-        'profile.actions.edit': 'Edit Profile',
-        'profile.actions.save': 'Save Changes',
-        'profile.actions.cancel': 'Cancel',
-        'profile.thirdParty.title': 'Third Party Connections'
+        'profile.edit': 'Edit Profile',
+        'profile.cancel': 'Cancel',
+        'profile.save': 'Save Changes',
+        'profile.delete': 'Delete Account',
+        'profile.fields.firstName': 'First Name',
+        'profile.fields.lastName': 'Last Name',
+        'profile.fields.username': 'Username',
+        'profile.fields.email': 'Email',
+        'profile.fields.password': 'Password',
+        'profile.fields.description': 'Description',
+        'profile.fields.profilePicture': 'Profile Picture',
+        'profile.connections.title': 'Connected Accounts',
+        'profile.connections.connect': 'Connect',
+        'profile.connections.disconnect': 'Disconnect',
       }
       return translations[key] || key
     },
@@ -24,63 +56,51 @@ jest.mock('next/navigation', () => ({
     push: jest.fn(),
     replace: jest.fn(),
     prefetch: jest.fn()
-  })
+  }),
+  useParams: () => ({})
 }))
 
+// Mock user service
+jest.mock('@/src/services/user.service', () => ({
+  useGetUserByIdQuery: () => ({
+    data: null,
+    isLoading: false,
+  }),
+  useUpdateUserMutation: () => [jest.fn()],
+  useDeleteUserMutation: () => [jest.fn()],
+}))
+
+const renderWithSession = (component: React.ReactNode) => {
+  return render(
+    <SessionProvider session={null}>
+      {component}
+    </SessionProvider>
+  )
+}
+
 describe('ProfilePage', () => {
-  const mockUser = {
-    id: '1',
-    username: 'testuser',
-    email: 'test@example.com',
-    firstName: 'John',
-    lastName: 'Doe',
-    birthDate: '1990-01-01',
-    phoneNumber: '+1234567890',
-    address: '123 Main St',
-    city: 'New York',
-    country: 'USA',
-    postalCode: '10001',
-    bio: 'Test bio',
-    profilePicture: 'https://example.com/avatar.jpg',
-    createdAt: '2024-01-01',
-    updatedAt: '2024-01-01',
-    isVerified: true,
-    role: 'USER',
-    preferences: {
-      language: 'en',
-      theme: 'light',
-      notifications: true
-    }
-  }
-
-  const mockConnections = {
-    google: true,
-    github: false,
-    discord: true
-  }
-
   beforeEach(() => {
     jest.clearAllMocks()
   })
 
   it('renders profile information', () => {
-    render(<ProfilePage user={mockUser} connections={mockConnections} />)
+    renderWithSession(<ProfilePage />)
 
-    expect(screen.getByText('testuser')).toBeInTheDocument()
-    expect(screen.getByText('test@example.com')).toBeInTheDocument()
-    expect(screen.getByText('John')).toBeInTheDocument()
-    expect(screen.getByText('Doe')).toBeInTheDocument()
+    expect(screen.getByLabelText('Username')).toHaveValue('testuser')
+    expect(screen.getByLabelText('Email')).toHaveValue('test@example.com')
+    expect(screen.getByLabelText('First Name')).toHaveValue('John')
+    expect(screen.getByLabelText('Last Name')).toHaveValue('Doe')
   })
 
   it('shows edit button when not in edit mode', () => {
-    render(<ProfilePage user={mockUser} connections={mockConnections} />)
+    renderWithSession(<ProfilePage />)
 
     const editButton = screen.getByRole('button', { name: 'Edit Profile' })
     expect(editButton).toBeInTheDocument()
   })
 
   it('shows save and cancel buttons when in edit mode', () => {
-    render(<ProfilePage user={mockUser} connections={mockConnections} />)
+    renderWithSession(<ProfilePage />)
 
     const editButton = screen.getByRole('button', { name: 'Edit Profile' })
     fireEvent.click(editButton)
@@ -90,18 +110,15 @@ describe('ProfilePage', () => {
   })
 
   it('renders third party connections section', () => {
-    render(<ProfilePage user={mockUser} connections={mockConnections} />)
+    renderWithSession(<ProfilePage />)
 
-    expect(screen.getByText('Third Party Connections')).toBeInTheDocument()
-    expect(screen.getByText('Google')).toBeInTheDocument()
-    expect(screen.getByText('GitHub')).toBeInTheDocument()
-    expect(screen.getByText('Discord')).toBeInTheDocument()
+    expect(screen.getByText('Connected Accounts')).toBeInTheDocument()
   })
 
   it('handles profile picture display', () => {
-    render(<ProfilePage user={mockUser} connections={mockConnections} />)
+    renderWithSession(<ProfilePage />)
 
-    const profilePicture = screen.getByRole('img')
-    expect(profilePicture).toHaveAttribute('src', mockUser.profilePicture)
+    const profilePicture = screen.getByAltText('Profile Picture')
+    expect(profilePicture).toHaveAttribute('src', 'https://example.com/avatar.jpg')
   })
 }) 
