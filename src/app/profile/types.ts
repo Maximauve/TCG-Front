@@ -8,7 +8,6 @@ export interface ProfileData {
   email: string;
   password: string;
   profilePicture: string;
-  profilePictureFile?: File;
 }
 
 export interface ProfileHeaderProps {
@@ -20,7 +19,7 @@ export interface ProfileHeaderProps {
 export interface ProfilePictureProps {
   profilePicture: string;
   isEditing: boolean;
-  onPictureChange: (file: File) => void;
+  onPictureChange: (url: string) => void;
 }
 
 export interface ProfileFormProps {

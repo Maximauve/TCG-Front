@@ -1,124 +1,147 @@
-import { render, screen, fireEvent } from '@testing-library/react'
-import '@testing-library/jest-dom'
-import ProfilePage from '../page'
-import { useTranslation } from 'react-i18next'
-import { SessionProvider } from 'next-auth/react'
+import '@testing-library/jest-dom';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import ProfilePage from '../page';
+import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
+import { useTranslation } from 'react-i18next';
 
-// Mock next-auth
-jest.mock('next-auth/react', () => ({
-  useSession: () => ({
-    data: {
-      user: {
-        id: '1',
-        username: 'testuser',
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        role: 'USER',
-        profilePicture: 'https://example.com/avatar.jpg',
-      },
-      expires: '1',
-    },
-    status: 'authenticated',
-  }),
-  SessionProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
-}))
+jest.mock('next-auth/react');
+jest.mock('next/navigation');
+jest.mock('react-i18next');
+jest.mock('@/src/core/toast', () => ({
+  showToast: {
+    success: jest.fn(),
+    error: jest.fn(),
+  },
+}));
 
-// Mock i18next
-jest.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
-      const translations: { [key: string]: string } = {
-        'profile.title': 'Profile',
-        'profile.edit': 'Edit Profile',
-        'profile.cancel': 'Cancel',
-        'profile.save': 'Save Changes',
-        'profile.delete': 'Delete Account',
-        'profile.fields.firstName': 'First Name',
-        'profile.fields.lastName': 'Last Name',
-        'profile.fields.username': 'Username',
-        'profile.fields.email': 'Email',
-        'profile.fields.password': 'Password',
-        'profile.fields.description': 'Description',
-        'profile.fields.profilePicture': 'Profile Picture',
-        'profile.connections.title': 'Connected Accounts',
-        'profile.connections.connect': 'Connect',
-        'profile.connections.disconnect': 'Disconnect',
-      }
-      return translations[key] || key
-    },
-  }),
-}))
+const mockGetUserByIdQuery = jest.fn();
+const mockUpdateUserMutation = jest.fn();
+const mockDeleteUserMutation = jest.fn();
 
-// Mock next/navigation
-jest.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-    replace: jest.fn(),
-    prefetch: jest.fn()
-  }),
-  useParams: () => ({})
-}))
-
-// Mock user service
 jest.mock('@/src/services/user.service', () => ({
-  useGetUserByIdQuery: () => ({
-    data: null,
-    isLoading: false,
-  }),
-  useUpdateUserMutation: () => [jest.fn()],
-  useDeleteUserMutation: () => [jest.fn()],
-}))
-
-const renderWithSession = (component: React.ReactNode) => {
-  return render(
-    <SessionProvider session={null}>
-      {component}
-    </SessionProvider>
-  )
-}
+  useGetUserByIdQuery: () => mockGetUserByIdQuery(),
+  useUpdateUserMutation: () => [mockUpdateUserMutation],
+  useDeleteUserMutation: () => [mockDeleteUserMutation],
+}));
 
 describe('ProfilePage', () => {
+  const mockUser = {
+    id: '1',
+    email: 'test@test.com',
+    username: 'testuser',
+    firstName: 'Test',
+    lastName: 'User',
+    profilePicture: 'https://example.com/avatar.jpg',
+    description: 'Test description',
+    roles: ['ROLE_USER'],
+  };
+
+  const mockSession = {
+    user: mockUser,
+  };
+
   beforeEach(() => {
-    jest.clearAllMocks()
-  })
+    (useSession as jest.Mock).mockReturnValue({
+      data: mockSession,
+      status: 'authenticated',
+    });
 
-  it('renders profile information', () => {
-    renderWithSession(<ProfilePage />)
+    (useParams as jest.Mock).mockReturnValue({});
 
-    expect(screen.getByLabelText('Username')).toHaveValue('testuser')
-    expect(screen.getByLabelText('Email')).toHaveValue('test@example.com')
-    expect(screen.getByLabelText('First Name')).toHaveValue('John')
-    expect(screen.getByLabelText('Last Name')).toHaveValue('Doe')
-  })
+    (useTranslation as jest.Mock).mockReturnValue({
+      t: (key: string) => key,
+    });
 
-  it('shows edit button when not in edit mode', () => {
-    renderWithSession(<ProfilePage />)
+    mockGetUserByIdQuery.mockReturnValue({
+      data: mockUser,
+      isLoading: false,
+    });
 
-    const editButton = screen.getByRole('button', { name: 'Edit Profile' })
-    expect(editButton).toBeInTheDocument()
-  })
+    mockUpdateUserMutation.mockReturnValue({
+      unwrap: () => Promise.resolve({ data: mockUser })
+    });
 
-  it('shows save and cancel buttons when in edit mode', () => {
-    renderWithSession(<ProfilePage />)
+    mockDeleteUserMutation.mockReturnValue({
+      unwrap: () => Promise.resolve({ data: mockUser })
+    });
+  });
 
-    const editButton = screen.getByRole('button', { name: 'Edit Profile' })
-    fireEvent.click(editButton)
+  it('renders profile page with user data', () => {
+    render(<ProfilePage />);
+    
+    expect(screen.getByDisplayValue(mockUser.email)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockUser.firstName)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockUser.lastName)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockUser.description)).toBeInTheDocument();
+  });
 
-    expect(screen.getByRole('button', { name: 'Save Changes' })).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument()
-  })
+  it('toggles edit mode when edit button is clicked', () => {
+    render(<ProfilePage />);
+    
+    const editButton = screen.getByRole('button', { name: /profile\.edit/i });
+    fireEvent.click(editButton);
+    
+    expect(screen.getByRole('button', { name: /profile\.save/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /profile\.delete/i })).toBeInTheDocument();
+  });
 
-  it('renders third party connections section', () => {
-    renderWithSession(<ProfilePage />)
+  it('resets form data when canceling edit mode', async () => {
+    render(<ProfilePage />);
+    
+    const editButton = screen.getByRole('button', { name: /profile\.edit/i });
+    fireEvent.click(editButton);
+    
+    const firstNameInput = screen.getByDisplayValue(mockUser.firstName);
+    fireEvent.change(firstNameInput, { target: { value: 'New Name' } });
+    
+    const cancelButton = screen.getByRole('button', { name: /profile\.cancel/i });
+    fireEvent.click(cancelButton);
+    
+    expect(screen.getByDisplayValue(mockUser.firstName)).toBeInTheDocument();
+  });
 
-    expect(screen.getByText('Connected Accounts')).toBeInTheDocument()
-  })
+  it('handles profile update successfully', async () => {
+    render(<ProfilePage />);
+    
+    const editButton = screen.getByRole('button', { name: /profile\.edit/i });
+    fireEvent.click(editButton);
+    
+    const firstNameInput = screen.getByDisplayValue(mockUser.firstName);
+    fireEvent.change(firstNameInput, { target: { value: 'New Name' } });
+    
+    const submitButton = screen.getByRole('button', { name: /profile\.save/i });
+    fireEvent.click(submitButton);
+    
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /profile\.edit/i })).toBeInTheDocument();
+    });
+  });
 
-  it('handles profile picture display', () => {
-    renderWithSession(<ProfilePage />)
+  it('handles profile deletion', async () => {
+    render(<ProfilePage />);
+    
+    const editButton = screen.getByRole('button', { name: /profile\.edit/i });
+    fireEvent.click(editButton);
+    
+    const deleteButton = screen.getByRole('button', { name: /profile\.delete/i });
+    fireEvent.click(deleteButton);
+    
+    await waitFor(() => {
+      expect(mockDeleteUserMutation).toHaveBeenCalled();
+    });
+  });
 
-    const profilePicture = screen.getByAltText('Profile Picture')
-    expect(profilePicture).toHaveAttribute('src', 'https://example.com/avatar.jpg')
-  })
-}) 
+  it('shows loading state when session is loading', () => {
+    (useSession as jest.Mock).mockReturnValue({
+      data: null,
+      status: 'loading',
+    });
+
+    render(<ProfilePage />);
+    
+    const loadingSpinner = screen.getByTestId('loading-spinner');
+    expect(loadingSpinner).toBeInTheDocument();
+    expect(loadingSpinner).toHaveClass('animate-spin');
+  });
+}); 

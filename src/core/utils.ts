@@ -1,6 +1,7 @@
 import { ProfileData } from "@/src/app/profile/types";
+import { User } from "@/src/types/model/User";
 
-export const getInitialData = (userData: any): ProfileData => ({
+export const getInitialData = (userData: User): ProfileData => ({
   firstName: userData?.firstName || '',
   lastName: userData?.lastName || '',
   username: userData?.username || '',
