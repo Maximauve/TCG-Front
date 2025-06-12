@@ -3,13 +3,45 @@ import GoogleProvider from "next-auth/providers/google"
 import DiscordProvider from "next-auth/providers/discord"
 import TwitchProvider from "next-auth/providers/twitch"
 import CredentialsProvider from "next-auth/providers/credentials"
+import { jwtDecode } from "jwt-decode"
+
+interface DecodedToken {
+  user: {
+    id: string;
+    email: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    description: string;
+  };
+  roles: string[];
+}
 
 declare module "next-auth" {
   interface Session {
     token?: string;
+    user: {
+      id: string;
+      email: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string;
+      description: string;
+      roles: string[];
+    }
   }
   interface User {
-    token?: string
+    id: string;
+    email: string;
+    username: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+    description: string;
+    roles: string[];
+    token?: string;
   }
   interface Profile {
     sub?: string
@@ -19,7 +51,18 @@ declare module "next-auth" {
 
 declare module "next-auth/jwt" {
   interface JWT {
-    token?: string
+    token?: string;
+    roles: string[];
+    user?: {
+      id: string;
+      email: string;
+      username: string;
+      firstName: string;
+      lastName: string;
+      profilePicture: string;
+      description: string;
+      roles: string[];
+    }
   }
 }
 
@@ -46,10 +89,10 @@ const handler = NextAuth({
       authorize: async (credentials) => {
         try {
           if (!credentials?.email || !credentials?.password) {
-            throw new Error('Email and password are required');
+            throw new Error('Email et mot de passe requis');
           }
 
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/login_check`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -61,22 +104,36 @@ const handler = NextAuth({
           const data = await res.json();
 
           if (!res.ok) {
-            throw new Error(data.message || 'Authentication failed');
+            throw new Error(data.message || 'Erreur d\'authentification');
           }
 
           if (data.token) {
-            return {
-              id: data.id || 'unknown',
-              email: credentials.email,
-              token: data.token,
-              name: data.username || credentials.email,
-            };
+            try {
+              const decodedToken = jwtDecode<DecodedToken>(data.token);
+              
+              if (!decodedToken.user) {
+                throw new Error('Structure de données utilisateur invalide dans le token');
+              }
+
+              return {
+                id: decodedToken.user.id,
+                email: decodedToken.user.email,
+                username: decodedToken.user.username,
+                firstName: decodedToken.user.firstName,
+                lastName: decodedToken.user.lastName,
+                profilePicture: decodedToken.user.profilePicture,
+                description: decodedToken.user.description,
+                roles: decodedToken.roles,
+                token: data.token,
+              };
+            } catch (error) {
+              throw new Error('Erreur lors du décodage du token');
+            }
           }
 
-          return null;
+          throw new Error('Token non reçu');
         } catch (error) {
-          console.error('Auth error:', error);
-          throw new Error('Authentication failed');
+          throw error;
         }
       }
     }),
@@ -86,9 +143,6 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log("USER + ", user);
-      console.log("ACCOUNT + ", account);
-      console.log("PROFILE + ", profile);
       if (account?.provider !== 'credentials') {
         try {
           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/oauth`, {
@@ -115,7 +169,6 @@ const handler = NextAuth({
             return true;
           }
         } catch (error) {
-          console.error('OAuth error:', error);
           return false;
         }
       }
@@ -128,24 +181,34 @@ const handler = NextAuth({
         token.idToken = account.id_token;
       }
       if (user) {
+        token.user = {
+          id: user.id,
+          email: user.email,
+          username: user.username,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profilePicture: user.profilePicture,
+          description: user.description,
+          roles: user.roles,
+        };
+        token.roles = user.roles;
         token.accessToken = user.token;
       }
       return token;
     },
     async session({ session, token }) {
       session.token = token.token;
-
+      if (token.user) {
+        session.user = token.user;
+      }
       return session;
-    },
-    async redirect({ url, baseUrl }) {
-      return url.startsWith(baseUrl) ? url : baseUrl;
     },
   },
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  debug: process.env.NODE_ENV === "development",
+  debug: false,
 })
 
 export { handler as GET, handler as POST }
