@@ -2,21 +2,30 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useState } from "react";
+import { showToast } from "@/src/core/toast";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
   const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const router = useRouter();
 
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await signIn("Credentials", {
-      redirect: true,
-      callbackUrl: "/",
+    const res = await signIn("credentials", {
+      redirect: false,
       email,
       password,
     });
+  
+    if (res?.error) {
+      showToast.error(res.error);
+    } else if (res?.ok) {
+      showToast.success("Connexion réussie !");
+      router.push("/");
+    }
   };
 
   return (
@@ -32,15 +41,15 @@ export default function Login() {
         ) : session ? (
           <div className="space-y-6">
             <div className="flex items-center justify-center">
-              {session.user?.image && (
+              {session.user?.profilePicture && (
                 <img
-                  src={session.user.image}
+                  src={session.user.profilePicture}
                   alt="Avatar"
                   className="w-16 h-16 rounded-full mr-4"
                 />
               )}
               <div>
-                <p className="font-medium text-black">{session.user?.name}</p>
+                <p className="font-medium text-black">{session.user?.username}</p>
                 <p className="text-sm text-gray-500">{session.user?.email}</p>
               </div>
             </div>
