@@ -21,6 +21,11 @@
     "updateRequest": {
       "error": "An error occurred while updating the account",
       "success": "Account successfully updated"
+    },
+    "connections": {
+      "title": "Connected Accounts",
+      "connect": "Connect",
+      "disconnect": "Disconnect"
     }
   }
 }

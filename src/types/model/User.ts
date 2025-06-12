@@ -1,10 +1,13 @@
 export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  profilePicture: string;
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  username?: string;
   description?: string;
-  roles: string[];
-}
+  email?: string;
+  role?: string;
+  profilePicture?: string;
+  googleId?: string;
+  discordId?: string;
+  twitchId?: string;
+} 

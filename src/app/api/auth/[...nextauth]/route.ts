@@ -6,7 +6,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 
 declare module "next-auth" {
   interface Session {
-    accessToken?: string
+    accessToken?: string;
   }
   interface User {
     accessToken?: string
@@ -86,8 +86,8 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log("ACCOUNT + ", account);
       console.log("USER + ", user);
+      console.log("ACCOUNT + ", account);
       console.log("PROFILE + ", profile);
       if (account?.provider !== 'credentials') {
         try {

@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import ProfileHeader from '@/src/components/ProfileHeader';
 import ProfileForm from '@/src/components/ProfileForm';
 import ProfilePicture from '@/src/components/ProfilePicture';
+import ThirdPartyConnections from '@/src/components/ThirdPartyConnections';
 import { ProfileData } from './types';
 import { useTranslation } from 'react-i18next';
 import { useDeleteUserMutation, useGetUserByIdQuery, useUpdateUserMutation } from '@/src/services/user.service';
@@ -117,6 +118,8 @@ export default function ProfilePage() {
             </div>
           )}
         </form>
+
+        {isCurrentUser && <ThirdPartyConnections />}
       </div>
     </div>
   );

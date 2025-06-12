@@ -1,0 +1,16 @@
+import 'next-auth';
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      id?: string;
+      firstName?: string;
+      lastName?: string;
+      username?: string;
+      description?: string;
+      email?: string;
+      role?: string;
+      profilePicture?: string;
+    } & DefaultSession["user"]
+  }
+}
