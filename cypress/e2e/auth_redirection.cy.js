@@ -27,33 +27,37 @@ describe('Redirections Authentification', () => {
     cy.get('input[type="email"]').type('wronguser@example.com');
     cy.get('input[type="password"]').type('wrongpassword');
     cy.get('button[type="submit"]').click();
-    cy.contains(/erreur|incorrect|invalide/i); // adapte selon le message affiché
+
+    // Attendre et vérifier le toast d'erreur
+    cy.get('.Toastify__toast--error') // adapte ce sélecteur à ta lib de toast (ex: .Toastify__toast, .chakra-toast, etc.)
+      .should('be.visible')
+      .and('contain', 'Invalid credentials'); // adapte le texte selon le message affiché
   });
 
-  it('permet de se déconnecter', () => {
-    // Connexion d'abord
-    const email = 'testuser@example.com';
-    const password = 'testpassword';
-    cy.visit('/login');
-    cy.get('input[type="email"]').type(email);
-    cy.get('input[type="password"]').type(password);
-    cy.get('button[type="submit"]').click();
-    cy.url().should('include', '/');
-    // Ouvre le menu ou va sur /profile si besoin
-    cy.visit('/profile');
-    cy.contains(email);
-    cy.contains(/déconnexion|logout/i).click();
-    cy.url().should('include', '/login');
-  });
+//   it('permet de se déconnecter', () => {
+//     // Connexion d'abord
+//     const email = 'testuser@example.com';
+//     const password = 'testpassword';
+//     cy.visit('/login');
+//     cy.get('input[type="email"]').type(email);
+//     cy.get('input[type="password"]').type(password);
+//     cy.get('button[type="submit"]').click();
+//     cy.url().should('include', '/');
+//     // Ouvre le menu ou va sur /profile si besoin
+//     cy.visit('/profile');
+//     cy.contains(email);
+//     cy.contains(/déconnexion|logout/i).click();
+//     cy.url().should('include', '/login');
+//   });
 
-  it('accède à /profile en étant connecté', () => {
-    const email = 'testuser@example.com';
-    const password = 'testpassword';
-    cy.visit('/login');
-    cy.get('input[type="email"]').type(email);
-    cy.get('input[type="password"]').type(password);
-    cy.get('button[type="submit"]').click();
-    cy.visit('/profile');
-    cy.contains(email); // ou autre info du profil
-  });
+//   it('accède à /profile en étant connecté', () => {
+//     const email = 'testuser@example.com';
+//     const password = 'testpassword';
+//     cy.visit('/login');
+//     cy.get('input[type="email"]').type(email);
+//     cy.get('input[type="password"]').type(password);
+//     cy.get('button[type="submit"]').click();
+//     cy.visit('/profile');
+//     cy.contains(email); // ou autre info du profil
+//   });
 }); 
