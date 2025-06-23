@@ -1,5 +1,6 @@
 {
   "hello": "Hello world",
+  "logout": "Se déconnecter",
   "profile": {
     "title": "Profil",
     "edit": "Modifier le profil",
