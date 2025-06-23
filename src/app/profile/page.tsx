@@ -69,11 +69,11 @@ export default function ProfilePage() {
       );
       await updateUser({ userId: targetUserId, data: filteredData }).unwrap()
         .then(() => {
-          showToast.success('profile.updateRequest.success');
+          showToast.success(t('profile.updateRequest.success'));
           setIsEditing(false);
         })
         .catch((error) => {
-          showToast.error(error.message || 'profile.updateRequest.error');
+          showToast.error(error.message || t('profile.updateRequest.error'));
           setProfileData(getInitialData(userData as User));
         });
     }
