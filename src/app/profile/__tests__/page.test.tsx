@@ -15,11 +15,13 @@ jest.mock('@/src/core/toast', () => ({
   },
 }));
 
+const mockGetCurrentUserQuery = jest.fn();
 const mockGetUserByIdQuery = jest.fn();
 const mockUpdateUserMutation = jest.fn();
 const mockDeleteUserMutation = jest.fn();
 
 jest.mock('@/src/services/user.service', () => ({
+  useGetCurrentUserQuery: () => mockGetCurrentUserQuery(),
   useGetUserByIdQuery: () => mockGetUserByIdQuery(),
   useUpdateUserMutation: () => [mockUpdateUserMutation],
   useDeleteUserMutation: () => [mockDeleteUserMutation],
@@ -51,6 +53,11 @@ describe('ProfilePage', () => {
 
     (useTranslation as jest.Mock).mockReturnValue({
       t: (key: string) => key,
+    });
+
+    mockGetCurrentUserQuery.mockReturnValue({
+      data: mockUser,
+      isLoading: false,
     });
 
     mockGetUserByIdQuery.mockReturnValue({
@@ -137,7 +144,12 @@ describe('ProfilePage', () => {
       data: null,
       status: 'loading',
     });
-
+  
+    mockGetCurrentUserQuery.mockReturnValue({
+      data: null,
+      isLoading: true,
+    });
+  
     render(<ProfilePage />);
     
     const loadingSpinner = screen.getByTestId('loading-spinner');
