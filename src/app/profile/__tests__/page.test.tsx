@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import ProfilePage from '../page';
+import ProfilePage from '../[id]/page';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';

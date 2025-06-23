@@ -3,6 +3,10 @@ import { getToken } from 'next-auth/jwt';
 import { NextRequestWithAuth } from 'next-auth/middleware';
 
 export default async function middleware(request: NextRequestWithAuth) {
+  if (request.nextUrl.pathname === '/') {
+    return NextResponse.next();
+  }
+
   const token = await getToken({ req: request, secureCookie: process.env.NODE_ENV === "production" });
   
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
@@ -27,7 +31,7 @@ export default async function middleware(request: NextRequestWithAuth) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public|api/auth).*)',
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.webp|.*\\.ico|.*\\.gif).*)",
   ],
 };
 
