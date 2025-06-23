@@ -117,6 +117,7 @@ export default function ProfilePageContent({ userId }: ProfilePageContentProps) 
                   type="button"
                   onClick={handleDelete}
                   className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                  data-testid="profile-delete-btn"
                 >
                   {t('profile.delete')}
                 </button>

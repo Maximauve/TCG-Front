@@ -38,7 +38,22 @@ export default function Login() {
         {status === "loading" ? (
           <Loader />
         ) : session ? (
-          <Loader />
+          <div className="flex flex-col items-center gap-4">
+            <img
+              src={session.user?.profilePicture || "/next.svg"}
+              alt="Avatar"
+              className="w-16 h-16 rounded-full border"
+            />
+            <div className="text-lg font-semibold">{session.user?.username || session.user?.email}</div>
+            <div className="text-gray-600">{session.user?.email}</div>
+            <button
+              type="button"
+              className="w-full py-2 px-4 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
+              onClick={() => signOut()}
+            >
+              Déconnexion
+            </button>
+          </div>
         ) : (
           <><div className="space-y-6">
                 <form onSubmit={handleEmailLogin} className="space-y-4">
