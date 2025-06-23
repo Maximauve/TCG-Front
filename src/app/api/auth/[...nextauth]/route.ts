@@ -116,7 +116,6 @@ const handler = NextAuth({
           }
 
           const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/login_check`;
-          console.log('🔍 API URL:', apiUrl);
 
           const res = await fetch(apiUrl, {
             method: 'POST',
@@ -127,9 +126,7 @@ const handler = NextAuth({
             }),
           });
 
-          console.log('📡 API Response status:', res.status);
           const data = await res.json();
-          console.log('📦 API Response data:', data);
 
           if (!res.ok) {
             throw new Error(data.message || 'Erreur d\'authentification');
