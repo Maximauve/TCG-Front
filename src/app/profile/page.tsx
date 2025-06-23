@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useGetCurrentUserQuery } from '@/src/services/user.service';
 import ProfileHeader from '@/src/components/ProfileHeader';
 import ProfileForm from '@/src/components/ProfileForm';
 import ProfilePicture from '@/src/components/ProfilePicture';
@@ -16,17 +16,17 @@ import Loader from '@/src/components/Loader';
 import { User } from '@/src/types/model/User';
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
   const params = useParams();
   const userId = params?.id as string | undefined;
+  const { data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUserQuery();
   const isCurrentUser = !userId;
   
   const { data: otherUserData } = useGetUserByIdQuery(userId!, {
     skip: isCurrentUser,
   });
 
-  const userData = isCurrentUser ? session?.user : otherUserData;
-  const canEdit = (isCurrentUser || session?.user?.roles?.includes('ADMIN')) ?? false;
+  const userData = isCurrentUser ? currentUser : otherUserData;
+  const canEdit = (isCurrentUser || currentUser?.role === 'ADMIN') ?? false;
 
   const [isEditing, setIsEditing] = useState(false);
   const [updateUser] = useUpdateUserMutation();
@@ -48,7 +48,7 @@ export default function ProfilePage() {
   };
 
   const handleDelete = async () => {
-    const targetUserId = isCurrentUser ? session?.user?.id : userId;
+    const targetUserId = isCurrentUser ? currentUser?.id : userId;
     if (targetUserId) {
       try {
         await deleteUser(targetUserId).unwrap()
@@ -62,27 +62,24 @@ export default function ProfilePage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const targetUserId = isCurrentUser ? session?.user?.id : userId;
+    const targetUserId = isCurrentUser ? currentUser?.id : userId;
     if (targetUserId) {
-      const formData = new FormData();
-      Object.entries(profileData).forEach(([key, value]) => {
-        if (value) {
-          formData.append(key, value);
-        }
-      });
-      await updateUser({ userId: targetUserId, formData }).unwrap()
+      const filteredData = Object.fromEntries(
+        Object.entries(profileData).filter(([_, value]) => value !== "")
+      );
+      await updateUser({ userId: targetUserId, data: filteredData }).unwrap()
         .then(() => {
-          showToast.success('profile.updateRequest.success');
+          showToast.success(t('profile.updateRequest.success'));
           setIsEditing(false);
         })
         .catch((error) => {
-          showToast.error(error.message || 'profile.updateRequest.error');
+          showToast.error(error.message || t('profile.updateRequest.error'));
           setProfileData(getInitialData(userData as User));
         });
     }
   };
 
-  if (status === "loading" || (!userData && !isCurrentUser)) {
+  if (isCurrentUserLoading || (!userData && !isCurrentUser)) {
     return <Loader />;
   }
 

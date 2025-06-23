@@ -11,11 +11,15 @@ export const userApi = baseApi.injectEndpoints({
       query: (userId) => `/user/${userId}`,
       providesTags: (result, error, userId) => [{ type: "USER", id: userId }],
     }),
-    updateUser: builder.mutation<User, { userId: string; formData: FormData }>({
-      query: ({ userId, formData }) => ({
+    updateUser: builder.mutation<User, { userId: string; data: Partial<User> }>({
+      query: ({ userId, data }) => ({
         url: `/user/${userId}`,
         method: 'PUT',
-        body: formData,
+        body: data,
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
       }),
       invalidatesTags: (result, error, { userId }) => [{ type: "USER", id: userId }],
     }),
