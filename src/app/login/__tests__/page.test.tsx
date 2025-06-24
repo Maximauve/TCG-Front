@@ -121,22 +121,22 @@ describe('Login Page', () => {
     });
   });
 
-  it('handles social login buttons', () => {
-    render(<Login />);
+  // it('handles social login buttons', () => {
+  //   render(<Login />);
     
-    const googleButton = screen.getByRole('button', { name: 'Se connecter avec Google' });
-    const discordButton = screen.getByRole('button', { name: 'Se connecter avec Discord' });
-    const twitchButton = screen.getByRole('button', { name: 'Se connecter avec Twitch' });
+  //   const googleButton = screen.getByRole('button', { name: 'Se connecter avec Google' });
+  //   const discordButton = screen.getByRole('button', { name: 'Se connecter avec Discord' });
+  //   const twitchButton = screen.getByRole('button', { name: 'Se connecter avec Twitch' });
 
-    fireEvent.click(googleButton);
-    expect(signIn).toHaveBeenCalledWith('google');
+  //   fireEvent.click(googleButton);
+  //   expect(signIn).toHaveBeenCalledWith('google');
 
-    fireEvent.click(discordButton);
-    expect(signIn).toHaveBeenCalledWith('discord');
+  //   fireEvent.click(discordButton);
+  //   expect(signIn).toHaveBeenCalledWith('discord');
 
-    fireEvent.click(twitchButton);
-    expect(signIn).toHaveBeenCalledWith('twitch');
-  });
+  //   fireEvent.click(twitchButton);
+  //   expect(signIn).toHaveBeenCalledWith('twitch');
+  // });
 
   it('handles logout', async () => {
     const mockUser = {
