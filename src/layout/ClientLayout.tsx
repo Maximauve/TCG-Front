@@ -7,6 +7,7 @@ import { I18nProvider } from "@/src/providers/I18nProvider";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import { defaultOptions } from "@/src/core/toast";
+import EasterEggModal from "@/src/components/EasterEggModal";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {
   const store = setupStore();
@@ -15,6 +16,7 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
       <AuthProvider>
         <I18nProvider>
           {children}
+          <EasterEggModal />
           <ToastContainer {...defaultOptions} />
         </I18nProvider>
       </AuthProvider>

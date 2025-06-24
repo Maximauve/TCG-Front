@@ -254,7 +254,7 @@ const handler = NextAuth({
     strategy: "jwt",
     maxAge: 60 * 60, // 1h
   },
-  debug: true,
+  // debug: true,
 })
 
 export { handler as GET, handler as POST }
