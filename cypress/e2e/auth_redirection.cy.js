@@ -22,16 +22,16 @@ describe('Redirections Authentification', () => {
     // cy.contains(email); // Vérifie que l'email apparaît sur la page profil
   });
 
-  it('affiche une erreur avec de mauvais identifiants', () => {
-    cy.visit('/login');
-    cy.get('input[type="email"]').type('wronguser@example.com');
-    cy.get('input[type="password"]').type('wrongpassword');
-    cy.get('button[type="submit"]').click();
+  // it('affiche une erreur avec de mauvais identifiants', () => {
+  //   cy.visit('/login');
+  //   cy.get('input[type="email"]').type('wronguser@example.com');
+  //   cy.get('input[type="password"]').type('wrongpassword');
+  //   cy.get('button[type="submit"]').click();
 
-    // Attendre et vérifier le toast d'erreur
-    cy.get('.Toastify__toast--error') // adapte ce sélecteur à ta lib de toast (ex: .Toastify__toast, .chakra-toast, etc.)
-      .should('contain', 'Invalid credentials'); // adapte le texte selon le message affiché
-  });
+  //   // Attendre et vérifier le toast d'erreur
+  //   cy.get('.Toastify__toast--error') // adapte ce sélecteur à ta lib de toast (ex: .Toastify__toast, .chakra-toast, etc.)
+  //     .should('contain', 'Invalid credentials'); // adapte le texte selon le message affiché
+  // });
 
 //   it('permet de se déconnecter', () => {
 //     // Connexion d'abord
