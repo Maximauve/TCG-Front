@@ -31,7 +31,7 @@ jobs:
           BACKEND_URL: https://preprod-www.tcg.kaly-games.fr
 
       - name: Wait for frontend
-        run: yarn wait-on http://localhost:3000
+        run: yarn wait-on http://localhost:5000
 
       - name: Run Cypress tests
         run: yarn cypress run
