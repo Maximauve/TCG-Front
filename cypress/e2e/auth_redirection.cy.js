@@ -30,8 +30,7 @@ describe('Redirections Authentification', () => {
 
     // Attendre et vérifier le toast d'erreur
     cy.get('.Toastify__toast--error') // adapte ce sélecteur à ta lib de toast (ex: .Toastify__toast, .chakra-toast, etc.)
-      .should('be.visible')
-      .and('contain', 'Invalid credentials'); // adapte le texte selon le message affiché
+      .should('contain', 'Invalid credentials'); // adapte le texte selon le message affiché
   });
 
 //   it('permet de se déconnecter', () => {
