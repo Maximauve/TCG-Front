@@ -51,6 +51,15 @@ export default function UserMenu() {
               className="w-full text-left px-4 py-2 hover:bg-gray-100"
               onClick={() => {
                 setMenuOpen(false);
+                router.push('/cards');
+              }}
+            >
+              Mes cartes
+            </button>
+            <button
+              className="w-full text-left px-4 py-2 hover:bg-gray-100"
+              onClick={() => {
+                setMenuOpen(false);
                 router.push('/profile');
               }}
             >
