@@ -13,6 +13,6 @@ export const baseApi = createApi({
     },
     credentials: 'include',
   }),
-  tagTypes: ["USER", "CARD"],
+  tagTypes: ["USER", "CARD", "COLLECTION"],
   endpoints: () => ({}),
 });

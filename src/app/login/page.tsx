@@ -87,7 +87,7 @@ export default function Login() {
                   </button>
                 </form>
 
-                <div className="text-center text-gray-600">ou connectez-vous avec</div>
+                {/* <div className="text-center text-gray-600">ou connectez-vous avec</div>
 
                 <div className="space-y-2">
                   <button
@@ -149,7 +149,7 @@ export default function Login() {
                     Se connecter avec Twitch
                   </button>
                 </div>
-              </div>  
+              </div>   */}
               <div className="text-center mt-4">
                 <p className="text-gray-600">
                   Pas de compte ?{" "}
@@ -158,7 +158,8 @@ export default function Login() {
                   </Link>
                 </p>
               </div>
-            </>
+            </div>
+          </>
         )}
       </div>
     </div>

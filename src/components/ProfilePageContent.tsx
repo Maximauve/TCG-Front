@@ -125,7 +125,7 @@ export default function ProfilePageContent({ userId }: ProfilePageContentProps) 
             </div>
           )}
         </form>
-        {isCurrentUser && <ThirdPartyConnections />}
+        {/* {isCurrentUser && <ThirdPartyConnections />} */}
       </div>
     </div>
   );
