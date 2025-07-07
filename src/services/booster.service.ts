@@ -8,10 +8,14 @@ export const boosterApi = baseApi.injectEndpoints({
         url: `/boosters/open/${collectionId}`,
         method: 'POST'
       })
-    })
+    }),
+    getBoosterStatus: builder.query<{ can_open_booster: boolean; current_stack: number; next_booster_at: string }, void>({
+      query: () => '/boosters/status',
+    }),
   }),
 });
 
 export const { 
-  useOpenBoosterMutation
+  useOpenBoosterMutation,
+  useGetBoosterStatusQuery,
 } = boosterApi;

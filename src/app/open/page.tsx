@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useGetCollectionsQuery } from "@/src/services/collection.service";
-import { useOpenBoosterMutation } from "@/src/services/booster.service";
+import { useOpenBoosterMutation, useGetBoosterStatusQuery } from "@/src/services/booster.service";
 import Loader from "@/src/components/Loader";
 import { Booster } from "@/src/components/Booster";
 import { showToast } from "@/src/core/toast";
@@ -17,6 +17,7 @@ export default function OpenPage() {
   const [selected, setSelected] = useState<Collection | null>(null);
   const [openBooster, { isLoading: isOpening }] = useOpenBoosterMutation();
   const [openedCards, setOpenedCards] = useState<CardType[] | null>(null);
+  const { data: boosterStatus, isLoading: isStatusLoading, isError: isStatusError, refetch: refetchBoosterStatus } = useGetBoosterStatusQuery();
 
   const handleOpenBooster = async () => {
     if (!selected) return;
@@ -24,6 +25,7 @@ export default function OpenPage() {
       const { cards } = await openBooster(selected.id).unwrap();
       setOpenedCards(cards);
       showToast.success("Booster ouvert avec succès !");
+      await refetchBoosterStatus();
     } catch (e: any) {
       showToast.error(e?.data?.message || "Erreur lors de l'ouverture du booster");
     }
@@ -34,8 +36,24 @@ export default function OpenPage() {
     setSelected(null);
   };
 
-  if (isLoading) return <Loader />;
-  if (isError) return <div className="text-center mt-10 text-red-500">Erreur lors du chargement des collections.</div>;
+  if (isLoading || isStatusLoading) return <Loader />;
+  if (isError || isStatusError) return <div className="text-center mt-10 text-red-500">Erreur lors du chargement des collections.</div>;
+  if (boosterStatus && !boosterStatus.can_open_booster) {
+    return (
+        <>
+          <UserMenu />
+          <div className="flex flex-col items-center min-h-screen justify-center p-6">
+          <div className="bg-white rounded-xl shadow-lg p-8 mt-10 flex flex-col items-center">
+            <h1 className="text-3xl font-bold mb-4 text-blue-700">Ouverture de booster indisponible</h1>
+            <p className="text-lg text-gray-700 mb-2">Vous ne pouvez pas ouvrir de booster pour le moment.</p>
+            {boosterStatus.next_booster_at && (
+              <p className="text-gray-500">Prochain booster disponible le : <b>{new Date(boosterStatus.next_booster_at).toLocaleString()}</b></p>
+            )}
+          </div>
+          </div>
+        </>
+    );
+  }
 
   if (openedCards) {
     return (
