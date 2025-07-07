@@ -6,6 +6,7 @@ import { useGetCardsQuery } from '@/src/services/card.service';
 import UserMenu from '@/src/components/UserMenu';
 import CardsList from '../../components/CardsList';
 import CardModal from '../../components/CardModal';
+import Navbar from '@/src/components/Navbar';
 
 export default function CardsPage() {
   const { data: cards } = useGetCardsQuery();
@@ -25,7 +26,7 @@ export default function CardsPage() {
 
   return (
     <>
-      <UserMenu />
+      <Navbar />
       <div className="flex flex-col min-h-screen">
         <h1 className="text-4xl font-bold text-center mb-8">Mes cartes</h1>
         <CardsList cards={cards || []} onSelect={setSelected} />

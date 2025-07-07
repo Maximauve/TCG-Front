@@ -33,7 +33,6 @@ export default function Navbar() {
         </Link>
       </div>
       <div className="flex gap-6 items-center">
-        <Link href="/" className="text-gray-700 hover:text-blue-700 font-medium transition-colors">Accueil</Link>
         {status === "authenticated" && session?.user ? (
           <div className="relative" ref={dropdownRef}>
             <button
@@ -56,6 +55,12 @@ export default function Navbar() {
                   onClick={() => setDropdownOpen(false)}
                 >
                   Profil
+                </Link>
+                <Link href="/open" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors rounded-t-lg">
+                    Ouvrir un booster
+                </Link>
+                <Link href="/cards" className="block px-4 py-2 text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors rounded-t-lg">
+                    Mes cartes
                 </Link>
                 <button
                   onClick={() => { setDropdownOpen(false); signOut({ callbackUrl: "/login" }); }}
