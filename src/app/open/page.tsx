@@ -18,7 +18,6 @@ export default function OpenPage() {
   const [openBooster, { isLoading: isOpening }] = useOpenBoosterMutation();
   const [openedCards, setOpenedCards] = useState<CardType[] | null>(null);
   const { data: boosterStatus, isLoading: isStatusLoading, isError: isStatusError, refetch: refetchBoosterStatus } = useGetBoosterStatusQuery();
-  const { data: boosterStatus, isLoading: isStatusLoading, isError: isStatusError, refetch: refetchBoosterStatus } = useGetBoosterStatusQuery();
   const router = useRouter();
 
   const handleOpenBooster = async () => {
