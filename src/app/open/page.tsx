@@ -9,7 +9,6 @@ import { showToast } from "@/src/core/toast";
 import { Collection } from "@/src/types/model/Collection";
 import Card from "@/src/components/Card";
 import { Card as CardType } from "@/src/types/model/Card";
-import UserMenu from "@/src/components/UserMenu";
 import Navbar from "@/src/components/Navbar";
 import { useRouter } from "next/navigation";
 
@@ -33,6 +32,7 @@ export default function OpenPage() {
       setOpenedCards(cards);
       showToast.success("Booster ouvert avec succès !");
       await refetchBoosterStatus();
+      await refetchBoosterStatus();
     } catch (e: any) {
       showToast.error(e?.data?.message || "Erreur lors de l'ouverture du booster");
     }
@@ -43,8 +43,24 @@ export default function OpenPage() {
     setSelected(null);
   };
 
-  if (isLoading || isStatusLoading) return <Loader />;
-  if (isError || isStatusError) return <div className="text-center mt-10 text-red-500">Erreur lors du chargement des collections.</div>;
+  if (isLoading || isStatusLoading || isStatusLoading) return <Loader />;
+  if (isError || isStatusError || isStatusError) return <div className="text-center mt-10 text-red-500">Erreur lors du chargement des collections.</div>;
+  if (boosterStatus && !boosterStatus.can_open_booster) {
+    return (
+        <>
+          <Navbar />
+          <div className="flex flex-col items-center min-h-screen justify-center p-6">
+          <div className="bg-white rounded-xl shadow-lg p-8 mt-10 flex flex-col items-center">
+            <h1 className="text-3xl font-bold mb-4 text-blue-700">Ouverture de booster indisponible</h1>
+            <p className="text-lg text-gray-700 mb-2">Vous ne pouvez pas ouvrir de booster pour le moment.</p>
+            {boosterStatus.next_booster_at && (
+              <p className="text-gray-500">Prochain booster disponible le : <b>{new Date(boosterStatus.next_booster_at).toLocaleString()}</b></p>
+            )}
+          </div>
+          </div>
+        </>
+    );
+  }
   if (openedCards) {
     return (
       <>
@@ -85,7 +101,7 @@ export default function OpenPage() {
   if (boosterStatus && !boosterStatus.can_open_booster) {
     return (
       <>
-        <UserMenu />
+        <Navbar />
         <div className="flex flex-col items-center min-h-screen justify-center p-6">
           <div className="bg-white rounded-xl shadow-lg p-8 mt-10 flex flex-col items-center">
             <h1 className="text-3xl font-bold mb-4 text-blue-700">Ouverture de booster indisponible</h1>
