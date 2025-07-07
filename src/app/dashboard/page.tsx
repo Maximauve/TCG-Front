@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useGetCollectionsQuery, useCreateCollectionMutation } from "@/src/services/collection.service";
+import { useCreateCollectionMutation, useGetMyCollectionsQuery } from "@/src/services/collection.service";
 import { useState, useRef } from "react";
 import { Collection } from "@/src/types/model/Collection";
 import { toast } from "react-toastify";
 import Navbar from "@/src/components/Navbar";
 
 export default function DashboardPage() {
-  const { data: collections, isLoading, error } = useGetCollectionsQuery();
+  const { data: collections, isLoading, error } = useGetMyCollectionsQuery();
   const [showModal, setShowModal] = useState(false);
   const [form, setForm] = useState<Partial<Collection>>({
     name: "",

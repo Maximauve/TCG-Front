@@ -5,6 +5,10 @@ import { Collection } from '../types/model/Collection';
 export const collectionApi = baseApi.injectEndpoints({
   endpoints: builder => ({
     getCollections: builder.query<Collection[], void>({
+      query: () => '/card-collections',
+      providesTags: ["COLLECTION"],
+    }),
+    getMyCollections: builder.query<Collection[], void>({
       query: () => '/my-card-collections',
       providesTags: ["COLLECTION"],
     }),
@@ -25,6 +29,7 @@ export const collectionApi = baseApi.injectEndpoints({
 
 export const {
   useGetCollectionsQuery,
+  useGetMyCollectionsQuery,
   useGetCollectionByIdQuery,
   useCreateCollectionMutation,
 } = collectionApi;
