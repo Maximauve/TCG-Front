@@ -20,7 +20,7 @@ export default function Card({ image, title, description, rarity = "common", onC
       onClick={onClick}
     >
       <Image
-        src={image ? `${process.env.NEXT_PUBLIC_API_URL}/${image}` : `${process.env.NEXT_PUBLIC_API_URL}/images/CARD_PLACEHOLDER.png}`}
+        src={image ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${image}` : `${process.env.NEXT_PUBLIC_API_URL}/images/CARD_PLACEHOLDER.png}`}
         alt={title || ""}
         width={250}
         height={450}

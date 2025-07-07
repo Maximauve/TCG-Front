@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useRef, useEffect } from 'react';
-import Card from '@/src/components/Card';
 import { Card as CardType } from '@/src/types/model/Card';
 import { useGetCardsQuery } from '@/src/services/card.service';
 import UserMenu from '@/src/components/UserMenu';
