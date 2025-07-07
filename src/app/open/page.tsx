@@ -19,6 +19,7 @@ export default function OpenPage() {
   const [openedCards, setOpenedCards] = useState<CardType[] | null>(null);
   const { data: boosterStatus, isLoading: isStatusLoading, isError: isStatusError, refetch: refetchBoosterStatus } = useGetBoosterStatusQuery();
   const router = useRouter();
+  const [justReturned, setJustReturned] = useState(true);
 
   const handleOpenBooster = async () => {
     if (!selected) return;
@@ -30,6 +31,7 @@ export default function OpenPage() {
     try {
       const { cards } = await openBooster(selected.id).unwrap();
       setOpenedCards(cards);
+      setJustReturned(false);
       showToast.success("Booster ouvert avec succès !");
       await refetchBoosterStatus();
     } catch (e: any) {
@@ -40,15 +42,16 @@ export default function OpenPage() {
   const handleBack = () => {
     setOpenedCards(null);
     setSelected(null);
+    setJustReturned(true);
   };
 
   if (isLoading || isStatusLoading || isStatusLoading) return <Loader />;
   if (isError || isStatusError || isStatusError) return <div className="text-center mt-10 text-red-500">Erreur lors du chargement des collections.</div>;
-  if (boosterStatus && !boosterStatus.can_open_booster) {
+  if ((boosterStatus && !boosterStatus.can_open_booster) && justReturned) {
     return (
-        <>
-          <Navbar />
-          <div className="flex flex-col items-center min-h-screen justify-center p-6">
+      <>
+        <Navbar />
+        <div className="flex flex-col items-center min-h-screen justify-center p-6">
           <div className="bg-white rounded-xl shadow-lg p-8 mt-10 flex flex-col items-center">
             <h1 className="text-3xl font-bold mb-4 text-blue-700">Ouverture de booster indisponible</h1>
             <p className="text-lg text-gray-700 mb-2">Vous ne pouvez pas ouvrir de booster pour le moment.</p>
@@ -56,8 +59,8 @@ export default function OpenPage() {
               <p className="text-gray-500">Prochain booster disponible le : <b>{new Date(boosterStatus.next_booster_at).toLocaleString()}</b></p>
             )}
           </div>
-          </div>
-        </>
+        </div>
+      </>
     );
   }
   if (openedCards) {
@@ -133,7 +136,7 @@ export default function OpenPage() {
               onClick={() => setSelected(collection)}
             >
               <div className="w-36 h-52 overflow-hidden rounded-lg">
-                <Booster image={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${collection.displayImage}`} />
+                <Booster image={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${collection.boosterImage}`} />
               </div>
               <div className="mt-4 text-lg font-semibold text-center">{collection.name}</div>
             </div>

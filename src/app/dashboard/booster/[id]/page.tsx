@@ -10,6 +10,7 @@ import CardGrid from "@/src/components/CardGrid";
 import BoosterActions from "@/src/components/BoosterActions";
 import BoosterModal from "@/src/components/BoosterModal";
 import CardForm from "@/src/components/CardForm";
+import Navbar from "@/src/components/Navbar";
 
 const rarityTable = {
   common:    [0.7, 0.65, 0.75, 0.6, 0.55, 0.8, 0.5],
@@ -48,7 +49,6 @@ export default function BoosterDetailPage() {
     const form = e.currentTarget;
     const formData = new FormData(form);
     formData.set("collectionId", id);
-    // Tirage aléatoire de la rareté
     const randomRarity = getRandomDropRate(cardForm.rarity as keyof typeof rarityTable);
     formData.set("rarity", cardForm.rarity);
     formData.set("dropRate", randomRarity.toString());
@@ -75,6 +75,8 @@ export default function BoosterDetailPage() {
   };
 
   return (
+    <>
+    <Navbar />
     <div className="p-8 max-w-5xl mx-auto">
       {isLoading && (
         <div className="flex justify-center items-center h-64" role="status">
@@ -89,8 +91,7 @@ export default function BoosterDetailPage() {
             name={booster.name}
             description={booster.description}
             releaseDate={booster.releaseDate}
-            endDate={booster.endDate}
-          />
+            endDate={booster.endDate} />
           <h2 className="text-2xl font-semibold mb-4 text-blue-700">Cartes du booster</h2>
           <CardGrid cards={booster.cards || []} />
           <BoosterActions onAddCard={() => setModalOpen(true)} />
@@ -101,8 +102,7 @@ export default function BoosterDetailPage() {
               error={formError}
               formRef={formRef}
               cardForm={cardForm}
-              onChange={handleCardFormChange}
-            />
+              onChange={handleCardFormChange} />
           </BoosterModal>
         </>
       )}
@@ -130,5 +130,6 @@ export default function BoosterDetailPage() {
         }
       `}</style>
     </div>
+    </>
   );
 } 
