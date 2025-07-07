@@ -55,9 +55,11 @@ on:
        - name: Run tests
          run: yarn test
          env:
-          CI: true
+           NEXT_PUBLIC_API_URL: localhost
+           CI: true
 
        - name: Check test coverage
          run: yarn test:coverage
          env:
-          CI: true
+           NEXT_PUBLIC_API_URL: localhost
+           CI: true
