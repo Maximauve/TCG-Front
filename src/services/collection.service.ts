@@ -5,7 +5,7 @@ import { Collection } from '../types/model/Collection';
 export const collectionApi = baseApi.injectEndpoints({
   endpoints: builder => ({
     getCollections: builder.query<Collection[], void>({
-      query: () => '/card-collections',
+      query: () => '/my-card-collections',
       providesTags: ["COLLECTION"],
     }),
     getCollectionById: builder.query<Collection, string>({
