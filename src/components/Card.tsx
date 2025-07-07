@@ -25,12 +25,11 @@ export default function Card({ image, title, description, rarity = "common", onC
 
   return (
     <div
-      className={`${isSelected ? "w-64 h-90" : "w-32 h-48"} relative flex items-center justify-center rounded-lg shadow cursor-pointer transition-transform hover:scale-105 border-4 ${borderClass}`}
-      style={{ boxShadow: isSelected ? `0 0 24px 6px var(--tw-shadow-color)` : undefined }}
+      className={`${isSelected ? "w-64 h-fit" : "w-32 h-fit"} relative flex items-center justify-center rounded-xl shadow cursor-pointer transition-transform hover:scale-105 border-4 ${borderClass} p-0`}
       onClick={onClick}
     >
       {showBadge && (
-        <span className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-bl-lg">
+        <span className="absolute top-0 right-0 bg-blue-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-bl-lg rounded-tr-lg">
           x{quantity}
         </span>
       )}
@@ -39,7 +38,8 @@ export default function Card({ image, title, description, rarity = "common", onC
         alt={title || ""}
         width={250}
         height={450}
-        className="object-contain w-full h-full rounded-lg"
+        className="object-cover w-full h-full rounded-lg"
+        style={{ boxShadow: isSelected ? `0 0 24px 6px var(--tw-shadow-color)` : undefined }}
       />
     </div>
   );
