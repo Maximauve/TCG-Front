@@ -135,7 +135,7 @@ export default function DashboardPage() {
         )}
       </div>
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/10 backdrop-blur-sm z-50 flex items-center justify-center">
           <div className="bg-white rounded-2xl p-9 w-full max-w-md shadow-2xl relative flex flex-col gap-4 overflow-y-auto max-h-[80vh] pr-2">
             <button
               onClick={() => setShowModal(false)}
