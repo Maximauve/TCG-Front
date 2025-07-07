@@ -32,7 +32,6 @@ export default function OpenPage() {
       setOpenedCards(cards);
       showToast.success("Booster ouvert avec succès !");
       await refetchBoosterStatus();
-      await refetchBoosterStatus();
     } catch (e: any) {
       showToast.error(e?.data?.message || "Erreur lors de l'ouverture du booster");
     }
@@ -121,7 +120,6 @@ export default function OpenPage() {
     );
   }
 
-  // Vue de sélection de collection
   return (
     <>
       <Navbar />
@@ -135,7 +133,7 @@ export default function OpenPage() {
               onClick={() => setSelected(collection)}
             >
               <div className="w-36 h-52 overflow-hidden rounded-lg">
-                <Booster image={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${collection.boosterImage}`} />
+                <Booster image={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${collection.displayImage}`} />
               </div>
               <div className="mt-4 text-lg font-semibold text-center">{collection.name}</div>
             </div>
