@@ -10,11 +10,20 @@ export const cardApi = baseApi.injectEndpoints({
     getLatestCards: builder.query<Card[], void>({
       query: () => ("/cards/latest"),
       providesTags: ["CARD"]
-    })
+    }),
+    createCard: builder.mutation<any, FormData>({
+      query: (body) => ({
+        url: '/manage/cards',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ["CARD"],
+    }),
   }),
 });
 
 export const { 
   useGetCardsQuery,
-  useGetLatestCardsQuery
+  useGetLatestCardsQuery,
+  useCreateCardMutation,
 } = cardApi;

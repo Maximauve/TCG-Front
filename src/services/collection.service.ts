@@ -8,9 +8,23 @@ export const collectionApi = baseApi.injectEndpoints({
       query: () => '/card-collections',
       providesTags: ["COLLECTION"],
     }),
+    getCollectionById: builder.query<Collection, string>({
+      query: (id) => `/card-collections/${id}`,
+      providesTags: (result, error, id) => [{ type: "COLLECTION", id }],
+    }),
+    createCollection: builder.mutation<Collection, FormData>({
+      query: (body) => ({
+        url: '/card-collections',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ["COLLECTION"],
+    }),
   }),
 });
 
-export const { 
+export const {
   useGetCollectionsQuery,
+  useGetCollectionByIdQuery,
+  useCreateCollectionMutation,
 } = collectionApi;

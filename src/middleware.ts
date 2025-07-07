@@ -7,8 +7,10 @@ export default async function middleware(request: NextRequestWithAuth) {
     return NextResponse.next();
   }
 
-  const token = await getToken({ req: request, secureCookie: process.env.NODE_ENV === "production" });
-  
+  const token = await getToken({ req: request, 
+    secret: process.env.NEXTAUTH_SECRET,
+    secureCookie: process.env.NODE_ENV === "production" });
+
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
                     request.nextUrl.pathname.startsWith('/register') ||
                     request.nextUrl.pathname.startsWith('/api/auth');
@@ -19,6 +21,7 @@ export default async function middleware(request: NextRequestWithAuth) {
     }
     return NextResponse.next();
   }
+
 
   if (!token) {
     const loginUrl = new URL('/login', request.url);

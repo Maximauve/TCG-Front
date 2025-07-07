@@ -8,7 +8,6 @@ export default function UserMenu() {
   const { data: session } = useSession();
   const user = session?.user;
   const [menuOpen, setMenuOpen] = useState(false);
-  const [modalOpen, setModalOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
 
@@ -32,7 +31,7 @@ export default function UserMenu() {
 
   return (
     <div className="flex justify-end items-center w-full mt-4">
-      <div className="relative mr-4" ref={menuRef}>
+      <div className="relative mr-10" ref={menuRef}>
         <button
           className="focus:outline-none"
           onClick={() => setMenuOpen((open) => !open)}
@@ -64,6 +63,15 @@ export default function UserMenu() {
               }}
             >
               Mon profil
+            </button>
+            <button
+              className="w-full text-left px-4 py-2 hover:bg-gray-100"
+              onClick={() => {
+                setMenuOpen(false);
+                router.push('/dashboard');
+              }}
+            >
+              Tableau de bord
             </button>
             <button
               className="w-full text-left px-4 py-2 hover:bg-gray-100 text-red-600 rounded-b-lg"
