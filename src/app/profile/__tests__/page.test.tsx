@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import ProfilePage from '../page';
+import ProfilePage from '../[id]/page';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
@@ -15,11 +15,13 @@ jest.mock('@/src/core/toast', () => ({
   },
 }));
 
+const mockGetCurrentUserQuery = jest.fn();
 const mockGetUserByIdQuery = jest.fn();
 const mockUpdateUserMutation = jest.fn();
 const mockDeleteUserMutation = jest.fn();
 
 jest.mock('@/src/services/user.service', () => ({
+  useGetCurrentUserQuery: () => mockGetCurrentUserQuery(),
   useGetUserByIdQuery: () => mockGetUserByIdQuery(),
   useUpdateUserMutation: () => [mockUpdateUserMutation],
   useDeleteUserMutation: () => [mockDeleteUserMutation],
@@ -42,28 +44,42 @@ describe('ProfilePage', () => {
   };
 
   beforeEach(() => {
+    const adminUser = { ...mockUser, role: 'ADMIN', roles: ['ROLE_ADMIN'] };
+    const adminSession = { user: adminUser };
+
     (useSession as jest.Mock).mockReturnValue({
-      data: mockSession,
+      data: adminSession,
       status: 'authenticated',
     });
 
     (useParams as jest.Mock).mockReturnValue({});
 
     (useTranslation as jest.Mock).mockReturnValue({
-      t: (key: string) => key,
+      t: (key: string) => {
+        if (key === 'profile.connections.disconnect') return 'Déconnexion';
+        if (key === 'profile.connections.connect') return 'Connexion';
+        if (key === 'profile.connections.disconnecting') return 'Déconnexion...';
+        if (key === 'profile.delete') return 'Supprimer';
+        return key;
+      },
+    });
+
+    mockGetCurrentUserQuery.mockReturnValue({
+      data: adminUser,
+      isLoading: false,
     });
 
     mockGetUserByIdQuery.mockReturnValue({
-      data: mockUser,
+      data: adminUser,
       isLoading: false,
     });
 
     mockUpdateUserMutation.mockReturnValue({
-      unwrap: () => Promise.resolve({ data: mockUser })
+      unwrap: () => Promise.resolve({ data: adminUser })
     });
 
     mockDeleteUserMutation.mockReturnValue({
-      unwrap: () => Promise.resolve({ data: mockUser })
+      unwrap: () => Promise.resolve({ data: adminUser })
     });
   });
 
@@ -83,7 +99,7 @@ describe('ProfilePage', () => {
     fireEvent.click(editButton);
     
     expect(screen.getByRole('button', { name: /profile\.save/i })).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /profile\.delete/i })).toBeInTheDocument();
+    expect(screen.getByTestId('profile-delete-btn')).toBeInTheDocument();
   });
 
   it('resets form data when canceling edit mode', async () => {
@@ -124,7 +140,7 @@ describe('ProfilePage', () => {
     const editButton = screen.getByRole('button', { name: /profile\.edit/i });
     fireEvent.click(editButton);
     
-    const deleteButton = screen.getByRole('button', { name: /profile\.delete/i });
+    const deleteButton = screen.getByTestId('profile-delete-btn');
     fireEvent.click(deleteButton);
     
     await waitFor(() => {
@@ -137,7 +153,12 @@ describe('ProfilePage', () => {
       data: null,
       status: 'loading',
     });
-
+  
+    mockGetCurrentUserQuery.mockReturnValue({
+      data: null,
+      isLoading: true,
+    });
+  
     render(<ProfilePage />);
     
     const loadingSpinner = screen.getByTestId('loading-spinner');

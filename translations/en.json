@@ -1,5 +1,6 @@
 {
   "hello": "Hello world",
+  "logout": "Logout",
   "profile": {
     "title": "Profile",
     "edit": "Edit Profile",

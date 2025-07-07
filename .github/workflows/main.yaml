@@ -6,6 +6,39 @@ on:
       - main
       - develop
 
+# jobs:
+#   cypress:
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - uses: actions/checkout@v3
+#
+#       - name: Setup Node.js
+#         uses: actions/setup-node@v3
+#         with:
+#           node-version: 18
+#
+#       - name: Install dependencies
+#         run: yarn install --frozen-lockfile
+#
+#       - name: Build frontend
+#         run: yarn build
+#         env:
+#           NEXT_PUBLIC_API_URL: localhost
+#
+#       - name: Start frontend (avec backend préprod)
+#         run: yarn start &
+#         env:
+#           NODE_ENV: test
+#           NEXT_PUBLIC_API_URL: localhost
+#           BACKEND_URL: https://preprod-www.tcg.kaly-games.fr
+#
+#       - name: Wait for frontend
+#         run: yarn wait-on http://localhost:5000
+#
+#       - name: Run Cypress tests
+#         run: yarn cypress run
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -26,9 +59,11 @@ jobs:
       - name: Run tests
         run: yarn test
         env:
+          NEXT_PUBLIC_API_URL: localhost
           CI: true
 
       - name: Check test coverage
         run: yarn test:coverage
         env:
-          CI: true 
+          NEXT_PUBLIC_API_URL: localhost
+          CI: true

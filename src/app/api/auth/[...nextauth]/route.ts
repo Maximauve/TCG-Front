@@ -90,6 +90,7 @@ declare module "next-auth/jwt" {
 }
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -116,7 +117,6 @@ const handler = NextAuth({
           }
 
           const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/login_check`;
-          console.log('🔍 API URL:', apiUrl);
 
           const res = await fetch(apiUrl, {
             method: 'POST',
@@ -127,9 +127,7 @@ const handler = NextAuth({
             }),
           });
 
-          console.log('📡 API Response status:', res.status);
           const data = await res.json();
-          console.log('📦 API Response data:', data);
 
           if (!res.ok) {
             throw new Error(data.message || 'Erreur d\'authentification');
@@ -174,6 +172,9 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
+      console.log("USER : ", user)
+      console.log("ACCOUNT : ", account)
+      console.log("PROFILE : ", profile)
       if (account?.provider !== 'credentials') {
         try {
           const payload: OAuthPayload = {
@@ -252,9 +253,9 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 60 * 60, // 1h
   },
-  debug: true,
+  // debug: true,
 })
 
 export { handler as GET, handler as POST }

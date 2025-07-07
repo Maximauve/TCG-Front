@@ -3,8 +3,14 @@ import { getToken } from 'next-auth/jwt';
 import { NextRequestWithAuth } from 'next-auth/middleware';
 
 export default async function middleware(request: NextRequestWithAuth) {
-  const token = await getToken({ req: request, secureCookie: process.env.NODE_ENV === "production" });
-  
+  if (request.nextUrl.pathname === '/') {
+    return NextResponse.next();
+  }
+
+  const token = await getToken({ req: request, 
+    secret: process.env.NEXTAUTH_SECRET,
+    secureCookie: process.env.NODE_ENV === "production" });
+
   const isAuthPage = request.nextUrl.pathname.startsWith('/login') || 
                     request.nextUrl.pathname.startsWith('/register') ||
                     request.nextUrl.pathname.startsWith('/api/auth');
@@ -15,6 +21,7 @@ export default async function middleware(request: NextRequestWithAuth) {
     }
     return NextResponse.next();
   }
+
 
   if (!token) {
     const loginUrl = new URL('/login', request.url);
@@ -27,7 +34,7 @@ export default async function middleware(request: NextRequestWithAuth) {
 
 export const config = {
   matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|public|api/auth).*)',
+    '/((?!_next/static|_next/image|favicon.ico|public|api/auth|.*\\.svg|.*\\.png|.*\\.jpg|.*\\.jpeg|.*\\.webp|.*\\.ico|.*\\.gif).*)',
   ],
 };
 
