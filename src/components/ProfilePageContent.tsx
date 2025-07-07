@@ -22,7 +22,7 @@ export default function ProfilePageContent({ userId }: ProfilePageContentProps) 
   const params = useParams();
   const paramId = userId || params?.id as string | undefined;
   const { data: currentUser, isLoading: isCurrentUserLoading } = useGetCurrentUserQuery();
-  const isCurrentUser = !paramId;
+  const isCurrentUser = !paramId || (currentUser && paramId === currentUser.id);
   const { data: otherUserData } = useGetUserByIdQuery(paramId!, {
     skip: isCurrentUser,
   });
