@@ -5,7 +5,7 @@ import { useGetCollectionsQuery, useCreateCollectionMutation } from "@/src/servi
 import { useState, useRef } from "react";
 import { Collection } from "@/src/types/model/Collection";
 import { toast } from "react-toastify";
-import UserMenu from "@/src/components/UserMenu";
+import Navbar from "@/src/components/Navbar";
 
 export default function DashboardPage() {
   const { data: collections, isLoading, error } = useGetCollectionsQuery();
@@ -86,7 +86,7 @@ export default function DashboardPage() {
 
   return (
     <>
-    <UserMenu />
+    <Navbar />
     <div className="min-h-screen p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
