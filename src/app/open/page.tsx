@@ -134,7 +134,9 @@ export default function OpenPage() {
               className={`flex flex-col items-center cursor-pointer border rounded-lg p-4 transition-transform hover:scale-105 ${selected?.id === collection.id ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
               onClick={() => setSelected(collection)}
             >
-              <Booster image={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${collection.displayImage}`} />
+              <div className="w-36 h-52 overflow-hidden rounded-lg">
+                <Booster image={`${process.env.NEXT_PUBLIC_API_URL}/uploads/${collection.boosterImage}`} />
+              </div>
               <div className="mt-4 text-lg font-semibold text-center">{collection.name}</div>
             </div>
           ))}

@@ -19,6 +19,7 @@ const mockCreateCollectionMutation = jest.fn();
 jest.mock('@/src/services/collection.service', () => ({
   useGetCollectionsQuery: () => mockGetCollectionsQuery(),
   useCreateCollectionMutation: () => [mockCreateCollectionMutation, { isLoading: false }],
+  useGetMyCollectionsQuery: () => mockGetCollectionsQuery(),
 }));
 
 describe('DashboardPage', () => {
