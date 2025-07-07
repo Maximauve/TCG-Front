@@ -36,8 +36,8 @@ export default function Card({ image, title, description, rarity = "common", onC
           x{quantity}
         </span>
       )}
-      <Image
-        src={image ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${image}` : `${process.env.NEXT_PUBLIC_API_URL}/images/CARD_PLACEHOLDER.png}`}
+      <img
+        src={image ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${image}` : "file.svg"}
         alt={title || ""}
         width={250}
         height={450}
