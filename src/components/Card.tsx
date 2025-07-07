@@ -4,8 +4,8 @@ const rarityStyles: Record<string, string> = {
   common: "border-gray-300",
   uncommon: "border-green-500 shadow-green-300/40",
   rare: "border-blue-500 shadow-blue-400/40",
-  epic: "border-purple-600 shadow-purple-400/60",
-  mythic: "border-orange-500 shadow-orange-400/70",
+  epic: "border-purple-600 shadow-purple-400/60 animate-epic-glow",
+  mythic: "border-orange-500 shadow-orange-400/70 animate-mythic-glow",
   special: "border-pink-500 shadow-pink-400/70 animate-pulse",
   promo: "border-yellow-400 shadow-yellow-200/80 animate-pulse",
   limited: "border-black shadow-black/60 animate-pulse",
@@ -23,7 +23,7 @@ interface CardProps {
 
 export default function Card({ image, title, description, rarity = "common", onClick, isSelected = false, quantity }: CardProps) {
   const borderClass = rarityStyles[rarity] || rarityStyles["common"];
-  const showBadge = (quantity ?? 0) > 1 && !isSelected;
+  const showBadge = (quantity ?? 0) > 1;
 
   return (
     <div

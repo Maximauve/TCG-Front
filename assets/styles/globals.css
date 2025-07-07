@@ -30,3 +30,22 @@ example2 {
   background-size: 18px 32px;
   background-position: 0 0, 0 0, 9px 16px, 9px 16px, 0 0, 9px 16px;
  }
+
+/* Animated glow for Epic and Mythic cards */
+@keyframes epic-glow {
+  0%, 100% { box-shadow: 0 0 4px 2px rgba(168, 85, 247, 0.6); }
+  50% { box-shadow: 0 0 12px 6px rgba(168, 85, 247, 0.9); }
+}
+
+.animate-epic-glow {
+  animation: epic-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes mythic-glow {
+  0%, 100% { box-shadow: 0 0 4px 2px rgba(251, 146, 60, 0.6); }
+  50% { box-shadow: 0 0 12px 6px rgba(251, 146, 60, 0.9); }
+}
+
+.animate-mythic-glow {
+  animation: mythic-glow 1.5s ease-in-out infinite;
+}
