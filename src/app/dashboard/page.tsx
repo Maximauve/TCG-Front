@@ -87,7 +87,7 @@ export default function DashboardPage() {
   return (
     <>
     <UserMenu />
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen p-8">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl font-bold">Dashboard</h1>
         <button
@@ -105,28 +105,34 @@ export default function DashboardPage() {
       )}
       {error && <p>Erreur lors du chargement</p>}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {collections?.map((col) => (
-          <div
-            key={col.id}
-            className="bg-white rounded-2xl shadow-lg p-7 flex flex-col items-center border border-gray-200 cursor-pointer hover:shadow-xl transition"
-            onClick={() => router.push(`/dashboard/booster/${col.id}`)}
-          >
-            <img
-              src={col.displayImage ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${col.displayImage}` : "/window.svg"}
-              alt={col.name}
-              className="w-28 h-28 object-cover rounded-xl mb-4 bg-gray-100 shadow"
-            />
-            <div className="font-bold text-lg mb-2 text-center">{col.name}</div>
-            <div className="text-gray-600 text-sm text-center mb-3 min-h-[40px]">{col.description}</div>
-            <button
-              className="mt-auto px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold text-base shadow hover:from-blue-700 hover:to-blue-900 transition"
-              onClick={e => {
-                e.stopPropagation();
-                router.push(`/dashboard/booster/${col.id}`);
-              }}
-            >Voir les cartes</button>
+        {collections && collections.length > 0 ? (
+          collections.map((col) => (
+            <div
+              key={col.id}
+              className="bg-white rounded-2xl shadow-lg p-7 flex flex-col items-center border border-gray-200 cursor-pointer hover:shadow-xl transition"
+              onClick={() => router.push(`/dashboard/booster/${col.id}`)}
+            >
+              <img
+                src={col.displayImage ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/${col.displayImage}` : "/window.svg"}
+                alt={col.name}
+                className="w-28 h-28 object-cover rounded-xl mb-4 bg-gray-100 shadow"
+              />
+              <div className="font-bold text-lg mb-2 text-center">{col.name}</div>
+              <div className="text-gray-600 text-sm text-center mb-3 min-h-[40px]">{col.description}</div>
+              <button
+                className="mt-auto px-5 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 text-white font-semibold text-base shadow hover:from-blue-700 hover:to-blue-900 transition"
+                onClick={e => {
+                  e.stopPropagation();
+                  router.push(`/dashboard/booster/${col.id}`);
+                }}
+              >Voir les cartes</button>
+            </div>
+          ))
+        ) : (
+          <div className="col-span-full text-center text-gray-500 text-lg py-12">
+            Aucun booster disponible pour le moment.
           </div>
-        ))}
+        )}
       </div>
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
@@ -175,7 +181,7 @@ export default function DashboardPage() {
                 )}
               </div>
               <label className="block text-sm font-medium mb-1" htmlFor="booster-releaseDate">Date de sortie *</label>
-              <input id="booster-releaseDate" name="release_date" type="date" placeholder="Date de sortie" value={form.releaseDate} onChange={handleChange} required className={inputClass} />
+              <input id="booster-releaseDate" name="releaseDate" type="date" placeholder="Date de sortie" value={form.releaseDate} onChange={handleChange} required className={inputClass} />
               <label className="block text-sm font-medium mb-1" htmlFor="booster-endDate">Date de fin</label>
               <input id="booster-endDate" name="endDate" type="date" placeholder="Date de fin" value={form.endDate} onChange={handleChange} className={inputClass} />
               <label className="flex items-center gap-2 text-sm">
