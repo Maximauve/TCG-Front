@@ -15,7 +15,18 @@
 
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #efefff;
+  /* opacity: 0.4; */
+  background-image:  linear-gradient(30deg, #e5e7ff 12%, transparent 12.5%, transparent 87%, #e5e7ff 87.5%, #e5e7ff), linear-gradient(150deg, #e5e7ff 12%, transparent 12.5%, transparent 87%, #e5e7ff 87.5%, #e5e7ff), linear-gradient(30deg, #e5e7ff 12%, transparent 12.5%, transparent 87%, #e5e7ff 87.5%, #e5e7ff), linear-gradient(150deg, #e5e7ff 12%, transparent 12.5%, transparent 87%, #e5e7ff 87.5%, #e5e7ff), linear-gradient(60deg, #e5e7ff77 25%, transparent 25.5%, transparent 75%, #e5e7ff77 75%, #e5e7ff77), linear-gradient(60deg, #e5e7ff77 25%, transparent 25.5%, transparent 75%, #e5e7ff77 75%, #e5e7ff77);
+  background-size: 8px 14px;
+  background-position: 0 0, 0 0, 4px 7px, 4px 7px, 0 0, 4px 7px;
 }
+
+example2 {
+  background-color: #fdfdff;
+  opacity: 0.4;
+  background-image:  linear-gradient(30deg, #b5bbff 12%, transparent 12.5%, transparent 87%, #b5bbff 87.5%, #b5bbff), linear-gradient(150deg, #b5bbff 12%, transparent 12.5%, transparent 87%, #b5bbff 87.5%, #b5bbff), linear-gradient(30deg, #b5bbff 12%, transparent 12.5%, transparent 87%, #b5bbff 87.5%, #b5bbff), linear-gradient(150deg, #b5bbff 12%, transparent 12.5%, transparent 87%, #b5bbff 87.5%, #b5bbff), linear-gradient(60deg, #b5bbff77 25%, transparent 25.5%, transparent 75%, #b5bbff77 75%, #b5bbff77), linear-gradient(60deg, #b5bbff77 25%, transparent 25.5%, transparent 75%, #b5bbff77 75%, #b5bbff77);
+  background-size: 18px 32px;
+  background-position: 0 0, 0 0, 9px 16px, 9px 16px, 0 0, 9px 16px;
+ }
