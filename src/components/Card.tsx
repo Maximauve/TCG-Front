@@ -1,5 +1,3 @@
-import Image from "next/image";
-
 const rarityStyles: Record<string, string> = {
   common: "border-gray-300",
   uncommon: "border-green-500 shadow-green-300/40",
