@@ -13,6 +13,7 @@ import { showToast } from '@/src/core/toast';
 import Loader from '@/src/components/Loader';
 import { User } from '@/src/types/model/User';
 import { useParams } from 'next/navigation';
+  
 
 interface ProfilePageContentProps {
   userId?: string;

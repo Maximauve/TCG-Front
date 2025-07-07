@@ -10,6 +10,7 @@ import { Collection } from "@/src/types/model/Collection";
 import Card from "@/src/components/Card";
 import { Card as CardType } from "@/src/types/model/Card";
 import UserMenu from "@/src/components/UserMenu";
+import Navbar from "@/src/components/Navbar";
 
 export default function OpenPage() {
   const { data: collections, isLoading, isError } = useGetCollectionsQuery();
@@ -39,7 +40,7 @@ export default function OpenPage() {
   if (openedCards) {
     return (
       <>
-        <UserMenu />
+         <Navbar />
         <div className="flex flex-col items-center min-h-screen p-6 bg-gradient-to-b from-blue-100 to-white">
           <h1 className="text-4xl font-bold mb-8 text-blue-700">Cartes obtenues !</h1>
           <div className="flex flex-wrap justify-center gap-8 mb-10">
@@ -77,7 +78,7 @@ export default function OpenPage() {
   // Vue de sélection de collection
   return (
     <>
-      <UserMenu />
+      <Navbar />
       <div className="flex flex-col items-center min-h-screen p-6">
         <h1 className="text-4xl font-bold mb-8">Ouvrir un booster</h1>
         <div className="flex flex-wrap justify-center gap-8 mb-10">

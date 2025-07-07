@@ -30,12 +30,12 @@ export default function Home() {
     return <div className="flex items-center justify-center min-h-screen">Chargement...</div>;
   }
 
-  if (!session) {
-    return <HomePage />;
-  }
+  // if (!session) {
+  //   return <HomePage />;
+  // }
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-between p-6">
+    <div className="flex flex-col min-h-screen items-center justify-between">
       <Navbar />
       <header className="w-full flex flex-col items-center mt-12 mb-8">
         <Image
