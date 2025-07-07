@@ -21,14 +21,17 @@ on:
 #       - name: Install dependencies
 #         run: yarn install --frozen-lockfile
 
-#       - name: Build frontend
-#         run: yarn build
-
-#       - name: Start frontend (avec backend préprod)
-#         run: yarn start &
-#         env:
-#           NODE_ENV: test
-#           BACKEND_URL: https://preprod-www.tcg.kaly-games.fr
+#      - name: Build frontend
+#        run: yarn build
+#        env:
+#          NEXT_PUBLIC_API_URL: localhost
+#
+#      - name: Start frontend (avec backend préprod)
+#        run: yarn start &
+#        env:
+#          NODE_ENV: test
+#          NEXT_PUBLIC_API_URL: localhost
+#          BACKEND_URL: https://preprod-www.tcg.kaly-games.fr
 
 #       - name: Wait for frontend
 #         run: yarn wait-on http://localhost:5000
