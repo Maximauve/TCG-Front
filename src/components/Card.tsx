@@ -44,7 +44,7 @@ export default function Card({ image, title, description, rarity = "common", onC
     cardRef.current.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${isSelected ? 1 : 1.05})`;
     
     // Show rainbow overlay when tilted and update its position (only for epic)
-    if (rarity === "epic") {
+    if (rarity === "epic" || rarity === "mythic") {
       const isTilted = Math.abs(rotateX) > 2 || Math.abs(rotateY) > 2;
       setIsTilted(isTilted);
       // Update rainbow overlay transform
@@ -60,7 +60,7 @@ export default function Card({ image, title, description, rarity = "common", onC
   const handleMouseLeave = () => {
     if (!cardRef.current) return;
     cardRef.current.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(${isSelected ? 1 : 1.05})`;
-    if (rarity === "epic") {
+    if (rarity === "epic" || rarity === "mythic") {
       setIsTilted(false);
       // Reset rainbow overlay position
       const rainbowOverlay = cardRef.current.querySelector('.rainbow-overlay') as HTMLElement;
@@ -95,7 +95,7 @@ export default function Card({ image, title, description, rarity = "common", onC
         className="object-cover w-full h-full rounded-lg"
         style={{ boxShadow: isSelected ? `0 0 24px 6px var(--tw-shadow-color)` : undefined }}
       />
-      {rarity === "epic" && isSelected && (
+      {["epic","mythic"].includes(rarity) && isSelected && (
         <>
           <div className={`pointer-events-none absolute left-1/2 top-1/2 w-[180%] h-[180%] -translate-x-1/2 -translate-y-1/2 rounded-full rainbow-overlay transition-opacity duration-300 ${isTilted ? 'opacity-90' : 'opacity-0'}`} />
         </>
