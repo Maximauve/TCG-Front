@@ -49,3 +49,25 @@ example2 {
 .animate-mythic-glow {
   animation: mythic-glow 1.5s ease-in-out infinite;
 }
+
+/* 3D transform effect for epic cards */
+.holo-epic {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+/* Rainbow overlay for epic cards when tilted */
+.rainbow-overlay {
+  background: linear-gradient(
+    45deg,
+    #ff0000 0%,
+    #ff7f00 12.5%,
+    #ffff00 25%,
+    #00ff00 37.5%,
+    #00ffff 50%,
+    #0000ff 62.5%,
+    #ff00ff 75%
+  );
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
