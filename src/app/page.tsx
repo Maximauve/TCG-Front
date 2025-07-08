@@ -56,7 +56,7 @@ export default function Home() {
       <main className="flex flex-col items-center gap-10 w-full flex-1">
         <div className="flex gap-6 mb-8">
           <a
-            href="https://discord.com/invite/your-invite-link"
+            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold px-6 py-3 rounded-full shadow transition-colors text-lg"
@@ -65,7 +65,7 @@ export default function Home() {
             Rejoindre Discord
           </a>
           <a
-            href="https://twitch.tv/your-channel"
+            href="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 bg-purple-500 hover:bg-purple-600 text-white font-semibold px-6 py-3 rounded-full shadow transition-colors text-lg"
