@@ -172,9 +172,6 @@ const handler = NextAuth({
   },
   callbacks: {
     async signIn({ user, account, profile }) {
-      console.log("USER : ", user)
-      console.log("ACCOUNT : ", account)
-      console.log("PROFILE : ", profile)
       if (account?.provider !== 'credentials') {
         try {
           const payload: OAuthPayload = {

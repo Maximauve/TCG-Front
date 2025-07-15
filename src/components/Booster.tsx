@@ -7,13 +7,12 @@ interface BoosterProps {
 export function Booster({ image }: BoosterProps) {
   return (
     <div className="flex items-center justify-center">
-      <Image
+      <img
         src={image}
         alt="Booster"
         width={180}
         height={250}
         className=""
-        priority
       />
     </div>
   );
